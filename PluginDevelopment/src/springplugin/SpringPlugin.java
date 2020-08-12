@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 
 import javax.swing.JOptionPane;
 
+import springplugin.configuration.ApplicationConfiguration;
+import springplugin.configuration.ApplicationConfigurationDefault;
 import springplugin.generator.options.GeneratorOptions;
 import springplugin.generator.options.ProjectOptions;
 
@@ -22,6 +24,7 @@ public class SpringPlugin extends com.nomagic.magicdraw.plugins.Plugin {
 		pluginDir = getDescriptor().getPluginDirectory().getPath();
 		createMagicDrawMenu();
 		loadProjectOptions();
+		loadApplicationConfiguration();
 		initSuccess();
 	}
 
@@ -41,6 +44,11 @@ public class SpringPlugin extends com.nomagic.magicdraw.plugins.Plugin {
 			JOptionPane.showMessageDialog(null, e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	private void loadApplicationConfiguration() {
+		//TODO: Load configuration from swing form or file
+		ApplicationConfiguration.setConfiguration(new ApplicationConfigurationDefault());
 	}
 
 	private void initSuccess() {

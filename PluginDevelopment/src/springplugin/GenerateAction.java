@@ -17,7 +17,6 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import springplugin.analyzer.AnalyzeException;
 import springplugin.analyzer.ModelAnalyzer;
 import springplugin.generator.BasicGenerator;
-import springplugin.generator.EJBGenerator;
 import springplugin.generator.fmmodel.FMModel;
 import springplugin.generator.options.GeneratorOptions;
 import springplugin.generator.options.ProjectOptions;
@@ -56,9 +55,11 @@ class GenerateAction extends MDAction{
 		}
 	}
 
-	private void callGenerators() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
+	private void callGenerators() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException, InstantiationException, IOException {
 		for(GeneratorOptions generatorOptions: ProjectOptions.getProjectOptions().getGeneratorOptions().values()) {
-			Class<?> generatorClass = Class.forName(generatorOptions.getGeneratorClass());
+			String fullClassName = BasicGenerator.class.getPackage().getName() + generatorOptions.getGeneratorClassName();
+			Class<?> generatorClass = Class.forName(fullClassName);
 			Constructor<?> constructor = generatorClass.getConstructor(GeneratorOptions.class);
 			BasicGenerator generator = (BasicGenerator) constructor.newInstance(new Object[] {generatorOptions});
 			generator.generate();
