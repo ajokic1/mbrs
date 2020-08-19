@@ -25,6 +25,8 @@ public class GeneratorOptions  {
 		this.generatorClassName = generatorClassName;
 	}
 
+	public GeneratorOptions() {}
+
 	public String getOutputPath() {
 		return outputPath;
 	}

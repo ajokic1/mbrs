@@ -17,6 +17,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import springplugin.analyzer.AnalyzeException;
 import springplugin.analyzer.ModelAnalyzer;
 import springplugin.configuration.ApplicationConfiguration;
+import springplugin.generator.BaseControllerGenerator;
 import springplugin.generator.BasicGenerator;
 import springplugin.generator.fmmodel.FMModel;
 import springplugin.generator.options.GeneratorOptions;
@@ -44,7 +45,7 @@ class GenerateAction extends MDAction{
 			analyzer.prepareModel();	
 			callGenerators();
 			generateSuccess();
-			exportToXml();
+			//exportToXml();
 		} catch (AnalyzeException
 				| ClassNotFoundException
 				| NoSuchMethodException
@@ -59,12 +60,15 @@ class GenerateAction extends MDAction{
 	private void callGenerators() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException, InstantiationException, IOException {
 		for(GeneratorOptions generatorOptions: ProjectOptions.getProjectOptions().getGeneratorOptions().values()) {
-			String fullClassName = BasicGenerator.class.getPackage().getName() + generatorOptions.getGeneratorClassName();
+			String fullClassName = BasicGenerator.class.getPackage().getName() +"." + generatorOptions.getGeneratorClassName();
 			Class<?> generatorClass = Class.forName(fullClassName);
 			Constructor<?> constructor = generatorClass.getConstructor(GeneratorOptions.class);
 			BasicGenerator generator = (BasicGenerator) constructor.newInstance(new Object[] {generatorOptions});
 			generator.generate();
+			//JOptionPane.showMessageDialog(null, "Generator"+ generator.getClass().getCanonicalName() +"called!");
 		}
+		//BaseControllerGenerator generator = new BaseControllerGenerator(ProjectOptions.getProjectOptions().getGeneratorOptions().get("BaseControllerGenerator"));
+		//generator.generate();
 	}
 
 	private void generateSuccess() {

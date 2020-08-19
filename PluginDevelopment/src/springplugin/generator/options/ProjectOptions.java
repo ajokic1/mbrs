@@ -1,5 +1,8 @@
 package springplugin.generator.options;
 
+import springplugin.configuration.ApplicationConfiguration;
+import springplugin.configuration.ApplicationConfigurationFromProjectOptions;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,9 +13,10 @@ import java.util.Map;
 
 public class ProjectOptions {
 	private String path;
+	private ApplicationConfigurationFromProjectOptions applicationConfiguration;
 	private List<TypeMapping> typeMappings = new ArrayList<TypeMapping>();
 	private Map<String, GeneratorOptions> generatorOptions = new HashMap<String, GeneratorOptions>();
-	private static ProjectOptions projectOptions = null; 
+	private static ProjectOptions projectOptions = null;
 	
 	public List<TypeMapping> getTypeMappings() {
 		return typeMappings;
@@ -49,4 +53,11 @@ public class ProjectOptions {
 		return projectOptions;
 	}
 
+	public ApplicationConfigurationFromProjectOptions getApplicationConfiguration() {
+		return applicationConfiguration;
+	}
+
+	public void setApplicationConfiguration(ApplicationConfigurationFromProjectOptions applicationConfiguration) {
+		this.applicationConfiguration = applicationConfiguration;
+	}
 }

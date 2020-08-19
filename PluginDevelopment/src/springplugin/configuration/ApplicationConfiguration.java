@@ -8,6 +8,11 @@ public abstract class ApplicationConfiguration {
 
     protected ApplicationConfiguration() {}
 
+    public ApplicationConfiguration(String applicationName, String applicationPackage) {
+        this.applicationName = applicationName;
+        this.applicationPackage = applicationPackage;
+    }
+
     private static ApplicationConfiguration configuration;
 
     public static ApplicationConfiguration getConfiguration() {

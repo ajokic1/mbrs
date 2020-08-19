@@ -11,6 +11,9 @@ import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
 import springplugin.configuration.ApplicationConfiguration;
 import springplugin.generator.options.GeneratorOptions;
+import springplugin.generator.options.ProjectOptions;
+
+import javax.swing.*;
 
 /**
  * Abstract generator that creates necessary environment for code generation 
@@ -68,14 +71,11 @@ public abstract class BasicGenerator {
 	}
 
 	private void createOutputDir() throws IOException {
-		String outputPath = generatorOptions.getOutputPath()
-				.replace("{0}", ApplicationConfiguration.getConfiguration().getApplicationName())
-				.replace("{1}", ApplicationConfiguration.getConfiguration().getApplicationPackage().replace(".", "/"));
-
-		File op = new File(outputPath);
+		System.out.println("OutputPath: " + getOutputPath());
+		File op = new File(getOutputPath());
 		if (!op.exists() && !op.mkdirs()) {
 			throw new IOException(
-					"An error occurred during folder creation " + outputPath);
+					"An error occurred during folder creation " + getOutputPath());
 		}
 	}
 
@@ -95,15 +95,21 @@ public abstract class BasicGenerator {
 	}
 
 	private String getOutputFileFullPath(String fileNamePart) {
-		return generatorOptions.getOutputPath()
+		return getOutputPath()
 				+ File.separator
-				+ (filePackage.isEmpty() ? "" : packageToPath(filePackage)
-				+ File.separator)
-				+ generatorOptions.getOutputFileName().replace("{0}", fileNamePart);
+				+ generatorOptions.getOutputFileName().replace("{entity}", fileNamePart);
+	}
+
+	private String getOutputPath() {
+		return generatorOptions.getOutputPath()
+				.replace("{path}", ProjectOptions.getProjectOptions().getPath())
+				.replace("{app_name}", packageToPath(ApplicationConfiguration.getConfiguration().getApplicationName()))
+				.replace("{app_package}", packageToPath(ApplicationConfiguration.getConfiguration().getApplicationPackage() + "." + generatorOptions.getFilePackage()));
 	}
 
 	private File createOutputFile(String fullPath) throws IOException {
 		File outputFile = new File(fullPath);
+		//JOptionPane.showMessageDialog(null, "FILE:" + outputFile.getAbsolutePath());
 		if (!outputFile.getParentFile().exists()) {
 			if (!outputFile.getParentFile().mkdirs()) {
 				throw new IOException("An error occurred during output folder creation "

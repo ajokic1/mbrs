@@ -38,7 +38,9 @@ public class SpringPlugin extends com.nomagic.magicdraw.plugins.Plugin {
 		try {
 			ProjectOptions projectOptions = ProjectOptionsLoader
 					.loadProjectOptionsFromFile(pluginDir, PROJECT_OPTIONS_FILE);
+			System.out.println("pluginDir: " + pluginDir);
 			ProjectOptions.getProjectOptions().setGeneratorOptions(projectOptions.getGeneratorOptions());
+			System.out.println("generatorOptionsLoaded: " + projectOptions.getGeneratorOptions().size());
 			ProjectOptions.getProjectOptions().setTypeMappings(projectOptions.getTypeMappings());
 			ProjectOptions.getProjectOptions().setPath(projectOptions.getPath());
 		} catch (FileNotFoundException e) {
@@ -48,8 +50,8 @@ public class SpringPlugin extends com.nomagic.magicdraw.plugins.Plugin {
 	}
 
 	private void loadApplicationConfiguration() {
-		//TODO: Load configuration from swing form or file
-		ApplicationConfiguration.setConfiguration(new ApplicationConfigurationDefault());
+		//ApplicationConfiguration.setConfiguration(new ApplicationConfigurationDefault());
+		ApplicationConfiguration.setConfiguration(ProjectOptions.getProjectOptions().getApplicationConfiguration());
 	}
 
 	private void initSuccess() {
