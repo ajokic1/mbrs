@@ -10,6 +10,8 @@ public abstract class FMElement {
 		this.name = name;
 	}
 
+	public FMElement() {}
+
 	public String getName() {
 		return name;
 	}

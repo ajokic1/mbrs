@@ -3,10 +3,9 @@ package springplugin.analyzer;
 import java.util.Iterator;
 import java.util.List;
 
-import springplugin.generator.fmmodel.FMClass;
-import springplugin.generator.fmmodel.FMEnumeration;
-import springplugin.generator.fmmodel.FMModel;
-import springplugin.generator.fmmodel.FMProperty;
+import com.nomagic.uml2.ext.magicdraw.mdprofiles.Stereotype;
+import springplugin.configuration.ApplicationConfiguration;
+import springplugin.generator.fmmodel.*;
 
 import com.nomagic.uml2.ext.jmi.helpers.ModelHelper;
 import com.nomagic.uml2.ext.jmi.helpers.StereotypesHelper;
@@ -17,6 +16,10 @@ import com.nomagic.uml2.ext.magicdraw.classes.mdkernel.Class;
 import com.nomagic.uml2.ext.magicdraw.classes.mdkernel.Enumeration;
 import com.nomagic.uml2.ext.magicdraw.classes.mdkernel.Property;
 import com.nomagic.uml2.ext.magicdraw.classes.mdkernel.Type;
+import springplugin.generator.fmmodel.enums.AnnotationType;
+import springplugin.generator.fmmodel.enums.CascadeType;
+import springplugin.generator.fmmodel.enums.FetchType;
+import springplugin.generator.fmmodel.enums.GenerationType;
 
 
 /** Model Analyzer takes necessary metadata from the MagicDraw model and puts it in 
@@ -28,21 +31,22 @@ import com.nomagic.uml2.ext.magicdraw.classes.mdkernel.Type;
  * Model Analyzer methods in order to support GUI generation. */ 
 
 
-public class ModelAnalyzer {	
-	//root model package
-	private Package root;
-	
-	//java root package for generated code
-	private String filePackage;
+public class ModelAnalyzer {
+	private final Package root;
+	private final String filePackage;
+
+	private final String ENTITY_CLASS_NAME = "Entity";
+	private final String PERSISTENT_PROPERTY = "PersistentProperty";
+	private final String GENERATED_VALUE_PROPERTY = "GeneratedValueProperty";
+	private final String JOIN_PROPERTY = "JoinProperty";
+	private final String OWNING_PROPERTY = "OwningProperty";
+	private final String INVERSE_PROPERTY = "InverseProperty";
+
 	
 	public ModelAnalyzer(Package root, String filePackage) {
 		super();
 		this.root = root;
 		this.filePackage = filePackage;
-	}
-
-	public Package getRoot() {
-		return root;
 	}
 	
 	public void prepareModel() throws AnalyzeException {
@@ -52,101 +56,226 @@ public class ModelAnalyzer {
 	}
 	
 	private void processPackage(Package pack, String packageOwner) throws AnalyzeException {
-		//Recursive procedure that extracts data from package elements and stores it in the 
-		// intermediate data structure
-		
-		if (pack.getName() == null) throw  
-			new AnalyzeException("Packages must have names!");
-		
-		String packageName = packageOwner;
-		if (pack != root) {
-			packageName += "." + pack.getName();
-		}
+		if (pack.getName() == null)
+			throw new AnalyzeException("Packages must have names!");
 		
 		if (pack.hasOwnedElement()) {
-			
-			for (Iterator<Element> it = pack.getOwnedElement().iterator(); it.hasNext();) {
-				Element ownedElement = it.next();
-				if (ownedElement instanceof Class) {
-					Class cl = (Class)ownedElement;
-					FMClass fmClass = getClassData(cl, packageName);
-					FMModel.getInstance().getClasses().add(fmClass);
-				}
-				
-				if (ownedElement instanceof Enumeration) {
-					Enumeration en = (Enumeration)ownedElement;
-					FMEnumeration fmEnumeration = getEnumerationData(en, packageName);
-					FMModel.getInstance().getEnumerations().add(fmEnumeration);
-				}								
+			for (Element ownedElement : pack.getOwnedElement()) {
+				processElement(ownedElement, pack, packageOwner);
 			}
-			
-			for (Iterator<Element> it = pack.getOwnedElement().iterator(); it.hasNext();) {
-				Element ownedElement = it.next();
-				if (ownedElement instanceof Package) {					
-					Package ownedPackage = (Package)ownedElement;
-					if (StereotypesHelper.getAppliedStereotypeByString(ownedPackage, "BusinessApp") != null)
-						//only packages with stereotype BusinessApp are candidates for metadata extraction and code generation:
-						processPackage(ownedPackage, packageName);
-				}
-			}
-			
-			/** @ToDo:
-			  * Process other package elements, as needed */ 
 		}
 	}
-	
-	private FMClass getClassData(Class cl, String packageName) throws AnalyzeException {
-		if (cl.getName() == null) 
-			throw new AnalyzeException("Classes must have names!");
-		
-		FMClass fmClass = new FMClass(cl.getName(), packageName, cl.getVisibility().toString());
-		Iterator<Property> it = ModelHelper.attributes(cl);
-		while (it.hasNext()) {
-			Property p = it.next();
-			FMProperty prop = getPropertyData(p, cl);
-			fmClass.addProperty(prop);	
-		}	
-		
-		/** @ToDo:
-		 * Add import declarations etc. */		
-		return fmClass;
-	}
-	
-	private FMProperty getPropertyData(Property p, Class cl) throws AnalyzeException {
-		String attName = p.getName();
-		if (attName == null) 
-			throw new AnalyzeException("Properties of the class: " + cl.getName() +
-					" must have names!");
-		Type attType = p.getType();
-		if (attType == null)
-			throw new AnalyzeException("Property " + cl.getName() + "." +
-			p.getName() + " must have type!");
-		
-		String typeName = attType.getName();
-		if (typeName == null)
-			throw new AnalyzeException("Type ot the property " + cl.getName() + "." +
-			p.getName() + " must have name!");		
-			
-		int lower = p.getLower();
-		int upper = p.getUpper();
-		
-		FMProperty prop = new FMProperty(attName, typeName, p.getVisibility().toString(), 
-				lower, upper);
-		return prop;		
-	}	
-	
-	private FMEnumeration getEnumerationData(Enumeration enumeration, String packageName) throws AnalyzeException {
-		FMEnumeration fmEnum = new FMEnumeration(enumeration.getName(), packageName);
-		List<EnumerationLiteral> list = enumeration.getOwnedLiteral();
-		for (int i = 0; i < list.size() - 1; i++) {
-			EnumerationLiteral literal = list.get(i);
-			if (literal.getName() == null)  
-				throw new AnalyzeException("Items of the enumeration " + enumeration.getName() +
-				" must have names!");
-			fmEnum.addValue(literal.getName());
+
+	private void processElement(Element element, Package pack, String packageOwner) throws AnalyzeException {
+		if (element instanceof Class) {
+			Class cl = (Class) element;
+			processEntity(cl, getPackageName(pack, packageOwner));
 		}
-		return fmEnum;
-	}	
-	
-	
+
+		if (element instanceof Enumeration) {
+			Enumeration enumeration = (Enumeration) element;
+			processEnumeration(enumeration, getPackageName(pack, packageOwner));
+		}
+	}
+
+	private void processEntity(Class mdClass, String packageName) throws AnalyzeException {
+		if(mdClass.getName() == null)
+			throw new AnalyzeException("Classes must have names");
+
+		FMEntity fmEntity = new FMEntity(mdClass.getName(), packageName);
+		Stereotype appliedStereotype = StereotypesHelper.getAppliedStereotypeByString(mdClass, ENTITY_CLASS_NAME);
+		if (appliedStereotype != null) {
+			processEntityAttributes(appliedStereotype, mdClass, fmEntity);
+		}
+		processEntityProperties(mdClass, fmEntity);
+		FMModel.getInstance().getClasses().add(fmEntity);
+	}
+
+	private void processEntityAttributes(Stereotype appliedStereotype, Class mdClass, FMEntity fmEntity) {
+		for (Property entityAttribute : appliedStereotype.getOwnedAttribute()) {
+			List<?> values = StereotypesHelper.getStereotypePropertyValue(mdClass, appliedStereotype, entityAttribute.getName());
+			if(values.isEmpty())
+				continue;
+			if(entityAttribute.getName().equals("schema")){
+				if(values.get(0) instanceof String) {
+					String schema = (String)values.get(0);
+					fmEntity.setSchema(schema);
+				}
+			}
+			if(entityAttribute.getName().equals("name")){
+				if(values.get(0) instanceof String) {
+					String name = (String)values.get(0);
+					fmEntity.setName(name);
+				}
+			}
+		}
+	}
+
+	private void processEntityProperties(Class mdClass, FMEntity fmEntity) throws AnalyzeException {
+		Iterator<Property> iterator = ModelHelper.attributes(mdClass);
+		while (iterator.hasNext()) {
+			processEntityProperty(iterator.next(), fmEntity);
+		}
+	}
+
+	private void processEntityProperty(Property property, FMEntity fmEntity) throws AnalyzeException {
+		if(property.getName() == null)
+			throw new AnalyzeException("Properties must have names.");
+
+		FMProperty fmProperty = new FMProperty();
+		fmProperty.setName(property.getName());
+		fmProperty.setLower(property.getLower());
+		fmProperty.setUpper(property.getUpper());
+		fmProperty.setVisibility(property.getVisibility().toString());
+		fmProperty.setType(getType(property));
+
+		if(StereotypesHelper.hasStereotypeOrDerived(property, PERSISTENT_PROPERTY))
+			processPersistentProperty(property, fmEntity, fmProperty);
+		else if(StereotypesHelper.hasStereotypeOrDerived(property, JOIN_PROPERTY))
+			processJoinProperty(property, fmEntity, fmProperty);
+	}
+
+	private FMType getType(Property property) {
+		String typeName = property.getType().getName();
+		String typePackage = "";
+		ApplicationConfiguration configuration = ApplicationConfiguration.getConfiguration();
+
+		// U entitetu tip moze da bude ili primitivni, ili importovani (npr java.util.Date) ili
+		// neki od ostalih entiteta/enumeracija
+		if(configuration.getJavaTypes().contains(typeName));
+		else if(configuration.getImportedTypes().containsKey(typeName)) {
+			typePackage = configuration.getImportedTypes().get(typeName);
+		} else {
+			typePackage = configuration.getGeneratedEntitiesPackage();
+		}
+		return new FMType(typeName, typePackage);
+	}
+
+	private void processPersistentProperty(Property property, FMEntity fmEntity, FMProperty fmProperty) {
+		Stereotype appliedStereotype = StereotypesHelper.getAppliedStereotypeByString(property, PERSISTENT_PROPERTY);
+		if(appliedStereotype==null) return;
+		FMPersistentProperty fmPersistentProperty = new FMPersistentProperty(fmProperty);
+		for(Property propertyAttribute: appliedStereotype.getOwnedAttribute()) {
+			List<?> values = StereotypesHelper
+					.getStereotypePropertyValue(property, appliedStereotype, propertyAttribute.getName());
+			if(propertyAttribute.getName().equals("length") && values.get(0) instanceof Integer) {
+				fmPersistentProperty.setLength((Integer) values.get(0));
+			} else if(propertyAttribute.getName().equals("name") && values.get(0) instanceof String) {
+				fmPersistentProperty.setName((String) values.get(0));
+			}
+			else if(propertyAttribute.getName().equals("isQueryable") && values.get(0) instanceof Boolean) {
+				fmPersistentProperty.setQueryable((Boolean) values.get(0));
+			}
+		}
+
+		if(StereotypesHelper.hasStereotypeOrDerived(property, GENERATED_VALUE_PROPERTY)) {
+			processGeneratedValueProperty(property, fmEntity, fmPersistentProperty);
+		} else{
+			fmEntity.addProperty(fmPersistentProperty);
+		}
+	}
+
+	private void processGeneratedValueProperty(Property property, FMEntity fmEntity, FMPersistentProperty fmPersistentProperty) {
+		Stereotype appliedStereotype = StereotypesHelper.getAppliedStereotypeByString(property, GENERATED_VALUE_PROPERTY);
+		if(appliedStereotype==null) return;
+		FMGeneratedValueProperty fmGeneratedValueProperty = new FMGeneratedValueProperty(fmPersistentProperty);
+		for(Property propertyAttribute: appliedStereotype.getOwnedAttribute()) {
+			List<?> values = StereotypesHelper
+					.getStereotypePropertyValue(property, appliedStereotype, propertyAttribute.getName());
+			if(propertyAttribute.getName().equals("strategy") && values.get(0) instanceof EnumerationLiteral) {
+				EnumerationLiteral enumerationLiteral = (EnumerationLiteral) values.get(0);
+				GenerationType generationType = GenerationType.valueOf(enumerationLiteral.getName());
+				fmGeneratedValueProperty.setStrategy(generationType);
+			}
+		}
+		fmEntity.addProperty(fmGeneratedValueProperty);
+	}
+
+	private void processJoinProperty(Property property, FMEntity fmEntity, FMProperty fmProperty) {
+		Stereotype appliedStereotype = StereotypesHelper.getAppliedStereotypeByString(property, JOIN_PROPERTY);
+		if(appliedStereotype==null) return;
+		FMJoinProperty fmJoinProperty = new FMJoinProperty(fmProperty);
+		for(Property propertyAttribute: appliedStereotype.getOwnedAttribute()) {
+			List<?> values = StereotypesHelper
+					.getStereotypePropertyValue(property, appliedStereotype, propertyAttribute.getName());
+			if(propertyAttribute.getName().equals("name") && values.get(0) instanceof String) {
+				fmJoinProperty.setName((String) values.get(0));
+			} else if(propertyAttribute.getName().equals("optional") && values.get(0) instanceof Boolean) {
+				fmJoinProperty.setOptional((Boolean) values.get(0));
+			} else if(propertyAttribute.getName().equals("fetch") && values.get(0) instanceof EnumerationLiteral) {
+				EnumerationLiteral enumerationLiteral = (EnumerationLiteral) values.get(0);
+				FetchType fetchType = FetchType.valueOf(enumerationLiteral.getName());
+				fmJoinProperty.setFetch(fetchType);
+			} else if(propertyAttribute.getName().equals("annotation") && values.get(0) instanceof EnumerationLiteral) {
+				EnumerationLiteral enumerationLiteral = (EnumerationLiteral) values.get(0);
+				AnnotationType annotationType = AnnotationType.valueOf(enumerationLiteral.getName());
+				fmJoinProperty.setAnnotation(annotationType);
+			}
+		}
+
+		if(StereotypesHelper.hasStereotypeOrDerived(property, OWNING_PROPERTY)) {
+			processOwningProperty(property, fmEntity, fmJoinProperty);
+		} else if(StereotypesHelper.hasStereotypeOrDerived(property, INVERSE_PROPERTY)) {
+			processInverseProperty(property, fmEntity, fmJoinProperty);
+		} else{
+			fmEntity.addProperty(fmJoinProperty);
+		}
+	}
+
+	private void processOwningProperty(Property property, FMEntity fmEntity, FMJoinProperty fmJoinProperty) {
+		Stereotype appliedStereotype = StereotypesHelper.getAppliedStereotypeByString(property, OWNING_PROPERTY);
+		if(appliedStereotype==null) return;
+		FMOwningProperty fmOwningProperty = new FMOwningProperty(fmJoinProperty);
+		for(Property propertyAttribute: appliedStereotype.getOwnedAttribute()) {
+			List<?> values = StereotypesHelper
+					.getStereotypePropertyValue(property, appliedStereotype, propertyAttribute.getName());
+			if(propertyAttribute.getName().equals("referencedColumnName") && values.get(0) instanceof String) {
+				fmOwningProperty.setReferencedColumnName((String) values.get(0));
+			} else if(propertyAttribute.getName().equals("joinColumnName") && values.get(0) instanceof String) {
+				fmOwningProperty.setJoinColumnName((String) values.get(0));
+			} else if(propertyAttribute.getName().equals("inverseJoinColumnName") && values.get(0) instanceof String) {
+				fmOwningProperty.setInverseJoinColumnName((String) values.get(0));
+			}
+		}
+		fmEntity.addProperty(fmOwningProperty);
+	}
+
+	private void processInverseProperty(Property property, FMEntity fmEntity, FMJoinProperty fmJoinProperty) {
+		Stereotype appliedStereotype = StereotypesHelper.getAppliedStereotypeByString(property, INVERSE_PROPERTY);
+		if(appliedStereotype==null) return;
+		FMInverseProperty fmInverseProperty = new FMInverseProperty(fmJoinProperty);
+		for(Property propertyAttribute: appliedStereotype.getOwnedAttribute()) {
+			List<?> values = StereotypesHelper
+					.getStereotypePropertyValue(property, appliedStereotype, propertyAttribute.getName());
+			if(propertyAttribute.getName().equals("mappedBy") && values.get(0) instanceof String) {
+				fmInverseProperty.setMappedBy((String) values.get(0));
+			} else if(propertyAttribute.getName().equals("cascade") && values.get(0) instanceof EnumerationLiteral) {
+				EnumerationLiteral enumerationLiteral = (EnumerationLiteral) values.get(0);
+				CascadeType cascadeType = CascadeType.valueOf(enumerationLiteral.getName());
+				fmInverseProperty.setCascade(cascadeType);
+			}
+		}
+		fmEntity.addProperty(fmInverseProperty);
+	}
+
+	private void processEnumeration(Enumeration enumeration, String packageName) throws AnalyzeException {
+		if(enumeration.getName() == null)
+			throw new AnalyzeException("Enumerations must have names");
+
+		FMEnumeration fmEnumeration = new FMEnumeration(enumeration.getName(), packageName);
+		for(EnumerationLiteral literal: enumeration.getOwnedLiteral()) {
+			fmEnumeration.addValue(literal.getName());
+		}
+		FMModel.getInstance().getEnumerations().add(fmEnumeration);
+	}
+
+	private String getPackageName(Package pack, String packageOwner) {
+		if (pack != root)
+			return packageOwner + pack.getName();
+		return packageOwner;
+	}
+
+	public Package getRoot() {
+		return root;
+	}
 }

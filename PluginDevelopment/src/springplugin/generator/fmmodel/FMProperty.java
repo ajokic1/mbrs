@@ -2,42 +2,41 @@ package springplugin.generator.fmmodel;
 
 
 public class FMProperty extends FMElement  {
-	//Property type
-	private String type;
-	// Property visibility (public, private, protected, package)
+	private FMType type;
 	private String visibility;
-	//Multiplicity (lower value)
-	private Integer lower;
-	//Multiplicity (upper value) 
-	private Integer upper;
-	
-	/** @ToDo: Add length, precision, unique... whatever is needed for ejb class generation
-	 * Also, provide these meta-attributes or tags in the modeling languange metaclass or 
-	 * stereotype */
 
-	
-	public FMProperty(String name, String type, String visibility, int lower, int upper) {
+	//Multiplicity
+	private Integer lower;
+	private Integer upper;
+
+	public FMProperty(String name, FMType type, String visibility, Integer lower, Integer upper) {
 		super(name);
 		this.type = type;
 		this.visibility = visibility;
-		
 		this.lower = lower;
-		this.upper = upper;		
+		this.upper = upper;
 	}
-	
-	public String getType() {
+
+	public FMProperty() {
+		super();
+	}
+
+	public FMType getType() {
 		return type;
 	}
-	public void setType(String type) {
+
+	public void setType(FMType type) {
 		this.type = type;
 	}
+
 	public String getVisibility() {
 		return visibility;
 	}
+
 	public void setVisibility(String visibility) {
 		this.visibility = visibility;
 	}
-	
+
 	public Integer getLower() {
 		return lower;
 	}

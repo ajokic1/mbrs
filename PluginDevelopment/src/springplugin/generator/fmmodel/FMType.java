@@ -1,22 +1,19 @@
 package springplugin.generator.fmmodel;
 
-public class FMType extends FMElement {	
+public class FMType extends FMElement {
 
-	public String getTypePackage() {
-		return typePackage;
-	}
+	private String typePackage;
 
 	public FMType(String name, String typePackage) {
 		super(name);
 		this.typePackage = typePackage;
 	}
 
+	public String getTypePackage() {
+		return typePackage;
+	}
+
 	public void setTypePackage(String typePackage) {
 		this.typePackage = typePackage;
 	}
-	
-	//Qualified package name, used for import declaration 
-	//Empty string for standard library types
-	private String typePackage;
-
 }

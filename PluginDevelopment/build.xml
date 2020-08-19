@@ -1,4 +1,4 @@
-<project name="MyPlugin" default="deploy">
+<project name="SpringPlugin" default="deploy">
 	
 	<property file="build.properties"/>
 	
@@ -26,20 +26,20 @@
 	
 	<target name="build" depends="compile">
 		<mkdir dir="dist"/>
-		<jar destfile="dist/myplugin.jar" basedir="bin">
+		<jar destfile="dist/springplugin.jar" basedir="bin">
 			<zipfileset dir="bin" includes="**"/>
 		</jar>
 	</target>
 		
 	<target name="deploy" depends="build">
-		<mkdir dir="${MAGICDRAW_HOME}/plugins/myplugin"/>
-		<copy file="dist/myplugin.jar" todir="${MAGICDRAW_HOME}/plugins/myplugin"/>
-		<copy file="resources/plugin.xml" todir="${MAGICDRAW_HOME}/plugins/myplugin"/>
-		<copy file="resources/ProjectOptions.xml" todir="${MAGICDRAW_HOME}/plugins/myplugin"/>
-		<copy todir="${MAGICDRAW_HOME}/plugins/myplugin">
+		<mkdir dir="${MAGICDRAW_HOME}/plugins/springplugin"/>
+		<copy file="dist/springplugin.jar" todir="${MAGICDRAW_HOME}/plugins/springplugin"/>
+		<copy file="resources/plugin.xml" todir="${MAGICDRAW_HOME}/plugins/springplugin"/>
+		<copy file="resources/ProjectOptions.xml" todir="${MAGICDRAW_HOME}/plugins/springplugin"/>
+		<copy todir="${MAGICDRAW_HOME}/plugins/springplugin">
 			<fileset dir="lib" includes="*.jar"/>
 		</copy>
-		<copy todir="${MAGICDRAW_HOME}/plugins/myplugin/templates">
+		<copy todir="${MAGICDRAW_HOME}/plugins/springplugin/templates">
 			<fileset dir="resources/templates" includes="*.ftl"/>
 		</copy>
 	</target>

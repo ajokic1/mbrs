@@ -3,7 +3,7 @@
         id="spring.generator.plugin"
         name="Spring App Generator"
         version="1.0"
-        provider-name="FTN Team X"
+        provider-name="FTN Team XX"
         class="springplugin.SpringPlugin">
         <requires>
            <api version="1.0"/>

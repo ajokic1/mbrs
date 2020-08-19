@@ -2,7 +2,7 @@ package springplugin.generator;
 
 import freemarker.template.TemplateException;
 import springplugin.configuration.ApplicationConfiguration;
-import springplugin.generator.fmmodel.FMClass;
+import springplugin.generator.fmmodel.FMEntity;
 import springplugin.generator.fmmodel.FMModel;
 import springplugin.generator.options.GeneratorOptions;
 
@@ -27,7 +27,7 @@ public abstract class PerClassGenerator extends BasicGenerator {
         }
 
         ApplicationConfiguration configuration = ApplicationConfiguration.getConfiguration();
-        for (FMClass cl: FMModel.getInstance().getClasses()) {
+        for (FMEntity cl: FMModel.getInstance().getClasses()) {
             Writer out;
             Map<String, Object> context = new HashMap<>();
             try {
@@ -45,7 +45,7 @@ public abstract class PerClassGenerator extends BasicGenerator {
         }
     }
 
-    protected abstract void populateContext(FMClass cl, Map<String, Object> context)
+    protected abstract void populateContext(FMEntity cl, Map<String, Object> context)
             throws TemplateException;
 
 

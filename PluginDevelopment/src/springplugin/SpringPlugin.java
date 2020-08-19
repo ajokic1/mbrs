@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 
 import javax.swing.JOptionPane;
 
+import com.nomagic.runtime.LogOutputStream;
 import springplugin.configuration.ApplicationConfiguration;
 import springplugin.configuration.ApplicationConfigurationDefault;
 import springplugin.generator.options.GeneratorOptions;
