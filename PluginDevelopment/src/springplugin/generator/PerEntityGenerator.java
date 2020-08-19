@@ -12,9 +12,9 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class PerClassGenerator extends BasicGenerator {
+public abstract class PerEntityGenerator extends BasicGenerator {
 
-    public PerClassGenerator(GeneratorOptions generatorOptions) {
+    public PerEntityGenerator(GeneratorOptions generatorOptions) {
         super(generatorOptions);
     }
 
@@ -26,16 +26,14 @@ public abstract class PerClassGenerator extends BasicGenerator {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
 
-        ApplicationConfiguration configuration = ApplicationConfiguration.getConfiguration();
-        for (FMEntity cl: FMModel.getInstance().getClasses()) {
+        for (FMEntity entity: FMModel.getInstance().getClasses()) {
             Writer out;
             Map<String, Object> context = new HashMap<>();
             try {
-                out = getWriter(cl.getName(), cl.getTypePackage());
+                out = getWriter(entity.getName(), entity.getTypePackage());
                 if(out != null) {
                     context.clear();
-                    context.put("appPackage", configuration.getApplicationName());
-                    populateContext(cl, context);
+                    populateContext(entity, context);
                     getTemplate().process(context, out);
                     out.flush();
                 }
@@ -47,7 +45,4 @@ public abstract class PerClassGenerator extends BasicGenerator {
 
     protected abstract void populateContext(FMEntity cl, Map<String, Object> context)
             throws TemplateException;
-
-
-
 }

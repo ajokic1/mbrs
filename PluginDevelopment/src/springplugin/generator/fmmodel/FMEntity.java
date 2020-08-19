@@ -19,6 +19,8 @@ public class FMEntity extends FMType {
 
 	//Class properties
 	private final List<FMProperty> FMProperties = new ArrayList<>();
+
+	private final List<FMPersistentProperty> queryableProperties = new ArrayList<>();
 	
 	public FMEntity(String name, String classPackage) {
 		super(name, classPackage);
@@ -43,9 +45,12 @@ public class FMEntity extends FMType {
 	public int getImportedCount(){
 		return FMProperties.size();
 	}
-	
 
+	public void addQueryableProperty(FMPersistentProperty property) {
+		queryableProperties.add(property);
+	}
 
-	
-	
+	public List<FMPersistentProperty> getQueryableProperties() {
+		return queryableProperties;
+	}
 }

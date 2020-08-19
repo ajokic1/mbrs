@@ -1,14 +1,12 @@
 package springplugin.generator;
 
-import freemarker.template.TemplateException;
+import springplugin.configuration.ApplicationConfiguration;
 import springplugin.generator.fmmodel.FMEntity;
-import springplugin.generator.fmmodel.FMProperty;
 import springplugin.generator.options.GeneratorOptions;
 
-import java.util.ArrayList;
 import java.util.Map;
 
-public class BaseControllerGenerator extends PerClassGenerator {
+public class BaseControllerGenerator extends PerEntityGenerator {
 
 
     public BaseControllerGenerator(GeneratorOptions generatorOptions) {
@@ -16,9 +14,9 @@ public class BaseControllerGenerator extends PerClassGenerator {
     }
 
     @Override
-    protected void populateContext(FMEntity cl, Map<String, Object> context) throws TemplateException {
-        context.put("className", cl.getName());
-        //TODO: Add searchable properties to list
-        context.put("findByProperty", new ArrayList<FMProperty>());
+    protected void populateContext(FMEntity entity, Map<String, Object> context) {
+        context.put("appPackage", ApplicationConfiguration.getConfiguration().getApplicationPackage());
+        context.put("entityName", entity.getName());
+        context.put("queryableProperties", entity.getQueryableProperties());
     }
 }

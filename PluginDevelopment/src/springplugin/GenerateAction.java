@@ -16,6 +16,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import springplugin.analyzer.AnalyzeException;
 import springplugin.analyzer.ModelAnalyzer;
+import springplugin.configuration.ApplicationConfiguration;
 import springplugin.generator.BasicGenerator;
 import springplugin.generator.fmmodel.FMModel;
 import springplugin.generator.options.GeneratorOptions;
@@ -37,7 +38,7 @@ class GenerateAction extends MDAction{
 		
 		if (root == null) return;
 	
-		ModelAnalyzer analyzer = new ModelAnalyzer(root, "ejb");	
+		ModelAnalyzer analyzer = new ModelAnalyzer(root, ApplicationConfiguration.getConfiguration().getGeneratedEntitiesPackage());
 		
 		try {
 			analyzer.prepareModel();	

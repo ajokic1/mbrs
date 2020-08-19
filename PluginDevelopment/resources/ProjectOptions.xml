@@ -1,1 +1,20 @@
-OUTPUT_PATH=/home/andrej/faks/mbrs/temp
+<?xml version="1.0" encoding="UTF-8" ?>
+<springplugin.generator.options.ProjectOptions>
+    <path>C:/temp</path>
+    <typeMappings>
+    </typeMappings>
+    <generatorOptions>
+        <entry>
+            <string>BaseControllerGenerator</string>
+            <springplugin.generator.options.GeneratorOptions>
+                <outputPath>{path}/{0}/src/main/java/{1}</outputPath>
+                <templateName>ApplicationYml</templateName>
+                <templateDir>templates/BaseController</templateDir>
+                <outputFileName>Base{0}Controller</outputFileName>
+                <overwrite>true</overwrite>
+                <filePackage>generated</filePackage>
+                <generatorClassName>BaseControllerGenerator</generatorClassName>
+            </springplugin.generator.options.GeneratorOptions>
+        </entry>
+    </generatorOptions>
+</springplugin.generator.options.ProjectOptions>

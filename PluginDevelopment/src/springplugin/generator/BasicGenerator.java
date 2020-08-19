@@ -9,6 +9,7 @@ import java.io.Writer;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
+import springplugin.configuration.ApplicationConfiguration;
 import springplugin.generator.options.GeneratorOptions;
 
 /**
@@ -19,101 +20,106 @@ import springplugin.generator.options.GeneratorOptions;
 
 public abstract class BasicGenerator {
 
-	private GeneratorOptions generatorOptions; 
-	private String outputPath;	
-	private String templateName;
-	private String templateDir;
-	private String outputFileName;
-	private boolean overwrite = false;
+	private GeneratorOptions generatorOptions;
 	private String filePackage;
 	private Configuration cfg;
 	private Template template;	
 	
 	public BasicGenerator(GeneratorOptions generatorOptions) {
 		this.generatorOptions = generatorOptions;
-		this.outputPath = generatorOptions.getOutputPath();
-		this.templateName = generatorOptions.getTemplateName();
-		this.templateDir = generatorOptions.getTemplateDir();
-		this.outputFileName = generatorOptions.getOutputFileName();
-		this.overwrite = generatorOptions.getOverwrite();
 		this.filePackage = generatorOptions.getFilePackage();
 	}
 
 	public void generate() throws IOException {		
-		if (outputPath == null) {
-			throw new IOException("Output path is not defined!");
-		}	
-		if (templateName == null) {
-			throw new IOException("Template name is not defined!");
-		}
-		if (outputFileName == null) {
-			throw new IOException("Output file name is not defined!");
-		}
-		if (filePackage == null) {
-			throw new IOException("Package name for code generation is not defined!");
-		}
-
-		cfg = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);		
-
-		final String tName = templateName + ".ftl";
+		checkIfRequiredOptionsNull();
+		final String tName = generatorOptions.getTemplateName() + ".ftl";
 		try {
-			cfg.setDirectoryForTemplateLoading(new File(templateDir));
-			template = cfg.getTemplate(tName);
-			DefaultObjectWrapperBuilder builder = 
-					new DefaultObjectWrapperBuilder(cfg.getIncompatibleImprovements());
-			cfg.setObjectWrapper(builder.build());
-			File op = new File(outputPath);
-			if (!op.exists() && !op.mkdirs()) {
-					throw new IOException(
-							"An error occurred during folder creation " + outputPath);
-			}
+			configureFreemarker(tName);
+			createOutputDir();
 		} catch (IOException e) {
 			throw new IOException("Can't find template " + tName + ".", e);
 		}
 
 	}
 
+	private void checkIfRequiredOptionsNull() throws IOException {
+		if (generatorOptions.getOutputPath() == null) {
+			throw new IOException("Output path is not defined!");
+		}
+		if (generatorOptions.getTemplateName() == null) {
+			throw new IOException("Template name is not defined!");
+		}
+		if (generatorOptions.getOutputFileName() == null) {
+			throw new IOException("Output file name is not defined!");
+		}
+		if (filePackage == null) {
+			throw new IOException("Package name for code generation is not defined!");
+		}
+	}
+
+	private void configureFreemarker(String tName) throws IOException {
+		cfg = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
+		cfg.setDirectoryForTemplateLoading(new File(generatorOptions.getTemplateDir()));
+		template = cfg.getTemplate(tName);
+		DefaultObjectWrapperBuilder builder =
+				new DefaultObjectWrapperBuilder(cfg.getIncompatibleImprovements());
+		cfg.setObjectWrapper(builder.build());
+
+	}
+
+	private void createOutputDir() throws IOException {
+		String outputPath = generatorOptions.getOutputPath()
+				.replace("{0}", ApplicationConfiguration.getConfiguration().getApplicationName())
+				.replace("{1}", ApplicationConfiguration.getConfiguration().getApplicationPackage().replace(".", "/"));
+
+		File op = new File(outputPath);
+		if (!op.exists() && !op.mkdirs()) {
+			throw new IOException(
+					"An error occurred during folder creation " + outputPath);
+		}
+	}
+
 	public Writer getWriter(String fileNamePart, String packageName) throws IOException {
-		if (packageName != filePackage) {
-			packageName.replace(".", File.separator);		
-			filePackage = packageName;
+		if (!packageName.equals(filePackage)) {
+			filePackage = packageToPath(packageName);
 		}
 			
-		String fullPath = outputPath
+		String fullPath = getOutputFileFullPath(fileNamePart);
+		File outputFile = createOutputFile(fullPath);
+
+		if(outputFile == null)
+			return null;
+
+		return new OutputStreamWriter(new FileOutputStream(outputFile));
+
+	}
+
+	private String getOutputFileFullPath(String fileNamePart) {
+		return generatorOptions.getOutputPath()
 				+ File.separator
 				+ (filePackage.isEmpty() ? "" : packageToPath(filePackage)
-						+ File.separator)
-				+ outputFileName.replace("{0}", fileNamePart);
+				+ File.separator)
+				+ generatorOptions.getOutputFileName().replace("{0}", fileNamePart);
+	}
 
-		File of = new File(fullPath);
-		if (!of.getParentFile().exists()) {
-			if (!of.getParentFile().mkdirs()) {
+	private File createOutputFile(String fullPath) throws IOException {
+		File outputFile = new File(fullPath);
+		if (!outputFile.getParentFile().exists()) {
+			if (!outputFile.getParentFile().mkdirs()) {
 				throw new IOException("An error occurred during output folder creation "
-						+ outputPath);
+						+ generatorOptions.getOutputPath());
 			}
 		}
-
-		System.out.println(of.getPath());
-		System.out.println(of.getName());
-
-		if (!isOverwrite() && of.exists()) {
+		System.out.println(outputFile.getPath());
+		System.out.println(outputFile.getName());
+		if (!generatorOptions.getOverwrite() && outputFile.exists()) {
 			return null;
 		}
-
-		return new OutputStreamWriter(new FileOutputStream(of));
-
+		return outputFile;
 	}
 
 	protected String packageToPath(String pack) {
 		return pack.replace(".", File.separator);
-	}
-
-	public boolean isOverwrite() {
-		return overwrite;
-	}
-
-	public void setOverwrite(boolean overwrite) {
-		this.overwrite = overwrite;
 	}
 
 	public Writer getWriter() throws IOException {
@@ -121,60 +127,14 @@ public abstract class BasicGenerator {
 
 	}
 
-	public void setOutputPath(String output) {
-		this.outputPath = output;
-	}
-
-	public void setTemplateName(String templateName) {
-		this.templateName = templateName;
-	}
-	
-	public void setTemplateDir(String templateDir) {
-		this.templateDir = templateDir;
-	}
-
-	public void setOutputFileName(String outputFileName) {
-		this.outputFileName = outputFileName;
-	}		
-	
 	public Configuration getCfg() {
 		return cfg;
 	}
 
-	public void setCfg(Configuration cfg) {
-		this.cfg = cfg;
-	}
 
 	public Template getTemplate() {
 		return template;
 	}
 
-	public void setTemplate(Template template) {
-		this.template = template;
-	}
-
-	public String getOutputPath() {
-		return outputPath;
-	}
-
-	public String getTemplateName() {
-		return templateName;
-	}
-	
-	public String getTemplateDir() {
-		return templateDir;
-	}
-
-	public String getOutputFileName() {
-		return outputFileName;
-	}
-
-	public String getFilePackage() {
-		return filePackage;
-	}
-
-	public void setFilePackage(String filePackage) {
-		this.filePackage = filePackage;
-	}
 
 }

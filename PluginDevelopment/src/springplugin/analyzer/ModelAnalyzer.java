@@ -172,6 +172,9 @@ public class ModelAnalyzer {
 			processGeneratedValueProperty(property, fmEntity, fmPersistentProperty);
 		} else{
 			fmEntity.addProperty(fmPersistentProperty);
+
+			if(fmPersistentProperty.isQueryable())
+				fmEntity.addQueryableProperty(fmPersistentProperty);
 		}
 	}
 
