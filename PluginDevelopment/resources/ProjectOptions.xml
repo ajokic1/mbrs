@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <springplugin.generator.options.ProjectOptions>
-    <path>/home/andrej/temp/generator</path>
     <path>/C:/TEMP/generator</path>
     <applicationConfiguration>
         <applicationName>aplikacija</applicationName>
@@ -19,6 +18,30 @@
                 <overwrite>true</overwrite>
                 <filePackage>generated.controllers</filePackage>
                 <generatorClassName>BaseControllerGenerator</generatorClassName>
+            </springplugin.generator.options.GeneratorOptions>
+        </entry>
+        <entry>
+            <string>ServiceGenerator</string>
+            <springplugin.generator.options.GeneratorOptions>
+                <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
+                <templateName>Service</templateName>
+                <templateDir>templates</templateDir>
+                <outputFileName>{entity}Service.java</outputFileName>
+                <overwrite>true</overwrite>
+                <filePackage>generated.services</filePackage>
+                <generatorClassName>ServiceGenerator</generatorClassName>
+            </springplugin.generator.options.GeneratorOptions>
+        </entry>
+        <entry>
+            <string>ConverterGenerator</string>
+            <springplugin.generator.options.GeneratorOptions>
+                <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
+                <templateName>Converter</templateName>
+                <templateDir>templates</templateDir>
+                <outputFileName>{entity}Converter.java</outputFileName>
+                <overwrite>true</overwrite>
+                <filePackage>generated.services</filePackage>
+                <generatorClassName>ConverterGenerator</generatorClassName>
             </springplugin.generator.options.GeneratorOptions>
         </entry>
     </generatorOptions>
