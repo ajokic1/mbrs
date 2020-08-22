@@ -44,5 +44,15 @@
                 <generatorClassName>ConverterGenerator</generatorClassName>
             </springplugin.generator.options.GeneratorOptions>
         </entry>
+              <springplugin.generator.options.GeneratorOptions>
+                <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
+                <templateName>BaseRepository</templateName>
+                <templateDir>templates</templateDir>
+                <outputFileName>Base{entity}Repository.java</outputFileName>
+                <overwrite>true</overwrite>
+                <filePackage>generated.services</filePackage>
+                <generatorClassName>BaseRepositoryGenerator</generatorClassName>
+            </springplugin.generator.options.GeneratorOptions>
+        </entry>
     </generatorOptions>
 </springplugin.generator.options.ProjectOptions>
