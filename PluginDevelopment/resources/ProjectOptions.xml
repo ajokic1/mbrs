@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <springplugin.generator.options.ProjectOptions>
     <path>/home/andrej/temp/generator</path>
+    <path>/C:/TEMP/generator</path>
     <applicationConfiguration>
         <applicationName>aplikacija</applicationName>
         <applicationPackage>test.generator.aplikacija</applicationPackage>
