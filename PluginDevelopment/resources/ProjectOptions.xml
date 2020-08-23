@@ -77,7 +77,7 @@
                 <outputFileName>application.yml</outputFileName>
                 <overwrite>true</overwrite>
                 <filePackage>generated.services</filePackage>
-                <generatorClassName>ApplicationYmlGenerato</generatorClassName>
+                <generatorClassName>ApplicationYmlGenerator</generatorClassName>
             </springplugin.generator.options.GeneratorOptions>
         </entry>
     </generatorOptions>
