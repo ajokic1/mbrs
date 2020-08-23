@@ -45,7 +45,7 @@
             </springplugin.generator.options.GeneratorOptions>
         </entry>
         <entry>
-            <string>ConverterGenerator</string>
+            <string>BaseRepositoryGenerator</string>
             <springplugin.generator.options.GeneratorOptions>
                 <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
                 <templateName>BaseRepository</templateName>
@@ -66,6 +66,18 @@
                 <overwrite>true</overwrite>
                 <filePackage>generated.services</filePackage>
                 <generatorClassName>BaseServiceGenerator</generatorClassName>
+            </springplugin.generator.options.GeneratorOptions>
+        </entry>
+         <entry>
+            <string>ApplicationYmlGenerator</string>
+            <springplugin.generator.options.GeneratorOptions>
+                <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
+                <templateName>applicationyml</templateName>
+                <templateDir>templates</templateDir>
+                <outputFileName>application.yml</outputFileName>
+                <overwrite>true</overwrite>
+                <filePackage>generated.services</filePackage>
+                <generatorClassName>ApplicationYmlGenerato</generatorClassName>
             </springplugin.generator.options.GeneratorOptions>
         </entry>
     </generatorOptions>
