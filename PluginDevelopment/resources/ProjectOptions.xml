@@ -4,6 +4,12 @@
     <applicationConfiguration>
         <applicationName>aplikacija</applicationName>
         <applicationPackage>test.generator.aplikacija</applicationPackage>
+        <serverPort>8080</serverPort>
+        <databaseName>aplikacija_db</databaseName>
+        <databaseUsername>root</databaseUsername>
+        <databasePassword>root</databasePassword>
+        <databaseHost>localhost</databaseHost>
+        <databasePort>3306</databasePort>
     </applicationConfiguration>
     <typeMappings>
     </typeMappings>
@@ -71,7 +77,7 @@
          <entry>
             <string>ApplicationYmlGenerator</string>
             <springplugin.generator.options.GeneratorOptions>
-                <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
+                <outputPath>{path}/{app_name}/resources</outputPath>
                 <templateName>applicationyml</templateName>
                 <templateDir>templates</templateDir>
                 <outputFileName>application.yml</outputFileName>

@@ -15,6 +15,6 @@ spring:
     serialization:
       fail-on-empty-beans: false
   datasource:
-    url: ${databaseUrl}
+    url: jdbc:mysql://${databaseHost}:${databasePort}/${databaseName}?createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
     username: ${databaseUsername}
     password: ${databasePassword}

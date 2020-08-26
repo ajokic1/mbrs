@@ -83,7 +83,6 @@ public abstract class BasicGenerator {
 		if (!packageName.equals(filePackage)) {
 			filePackage = packageToPath(packageName);
 		}
-			
 		String fullPath = getOutputFileFullPath(fileNamePart);
 		File outputFile = createOutputFile(fullPath);
 
