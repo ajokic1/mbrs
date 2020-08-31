@@ -68,5 +68,29 @@
                 <generatorClassName>BaseServiceGenerator</generatorClassName>
             </springplugin.generator.options.GeneratorOptions>
         </entry>
+         <entry>
+            <string>DtoGenerator</string>
+            <springplugin.generator.options.GeneratorOptions>
+                <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
+                <templateName>Dto</templateName>
+                <templateDir>templates</templateDir>
+                <outputFileName>{entity}Dto.java</outputFileName>
+                <overwrite>true</overwrite>
+                <filePackage>generated.dtos</filePackage>
+                <generatorClassName>DtoGenerator</generatorClassName>
+            </springplugin.generator.options.GeneratorOptions>
+        </entry>
+         <entry>
+            <string>ModelGenerator</string>
+            <springplugin.generator.options.GeneratorOptions>
+                <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
+                <templateName>Model</templateName>
+                <templateDir>templates</templateDir>
+               // <outputFileName>{entity}.java</outputFileName>
+                <overwrite>true</overwrite>
+                <filePackage>generated.models</filePackage>
+                <generatorClassName>ModelGenerator</generatorClassName>
+            </springplugin.generator.options.GeneratorOptions>
+        </entry>
     </generatorOptions>
 </springplugin.generator.options.ProjectOptions>
