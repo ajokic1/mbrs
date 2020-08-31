@@ -68,7 +68,7 @@
                 <generatorClassName>BaseServiceGenerator</generatorClassName>
             </springplugin.generator.options.GeneratorOptions>
         </entry>
-         <entry>
+        <entry>
             <string>DtoGenerator</string>
             <springplugin.generator.options.GeneratorOptions>
                 <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
@@ -80,7 +80,7 @@
                 <generatorClassName>DtoGenerator</generatorClassName>
             </springplugin.generator.options.GeneratorOptions>
         </entry>
-         <entry>
+        <entry>
             <string>ModelGenerator</string>
             <springplugin.generator.options.GeneratorOptions>
                 <outputPath>{path}/{app_name}/src/{app_package}</outputPath>

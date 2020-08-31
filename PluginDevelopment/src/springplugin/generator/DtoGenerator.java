@@ -13,7 +13,7 @@ public class DtoGenerator extends PerEntityGenerator {
 	}
 
 	@Override
-	protected void populateContext(FMEntity entity, Map<String, Object> context)  {
+	protected void populateContext(FMEntity entity, Map<String, Object> context) {
 		context.put("appPackage", ApplicationConfiguration.getConfiguration().getApplicationPackage());
         context.put("entityName", entity.getName());
         context.put("properties", entity.getProperties());

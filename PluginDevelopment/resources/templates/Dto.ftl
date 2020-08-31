@@ -14,7 +14,7 @@ import ${property.type.typePackage}.${property.type.name}
 public class ${entityName}Dto {
 
 	<#list Properties as property>
-   private ${property.type}  ${property.name} 
+    private ${property.type}  ${property.name} 
     </#list>
    
 }

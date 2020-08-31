@@ -1,7 +1,6 @@
-package ${appPackage}.generated.controllers;
+package ${appPackage}.generated.models;
 
 import lombok.Data;
-
 import javax.persistence.*;
 
 <#list Properties as property>
