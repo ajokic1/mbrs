@@ -5,6 +5,13 @@ import java.util.*;
 public abstract class ApplicationConfiguration {
     protected String applicationName;
     protected String applicationPackage;
+    protected String serverPort;
+    protected String databaseName;
+    protected String databaseHost;
+    protected String databasePort;
+    protected String databaseUsername;
+    protected String databasePassword;
+
 
     protected ApplicationConfiguration() {}
 
@@ -35,6 +42,30 @@ public abstract class ApplicationConfiguration {
     }
 
     public String getGeneratedCodePackage() { return getApplicationPackage() + ".generated";}
+
+    public String getServerPort() {
+        return serverPort;
+    }
+
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    public String getDatabaseHost() {
+        return databaseHost;
+    }
+
+    public String getDatabasePort() {
+        return databasePort;
+    }
+
+    public String getDatabaseUsername() {
+        return databaseUsername;
+    }
+
+    public String getDatabasePassword() {
+        return databasePassword;
+    }
 
     public String getGeneratedEntitiesPackage() { return getGeneratedCodePackage() + ".models";}
     public String getGeneratedServicesPackage() { return getGeneratedCodePackage() + ".services";}

@@ -1,9 +1,16 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8" ?>
 <springplugin.generator.options.ProjectOptions>
     <path>/C:/TEMP/generator</path>
     <applicationConfiguration>
         <applicationName>aplikacija</applicationName>
         <applicationPackage>test.generator.aplikacija</applicationPackage>
+        <serverPort>8080</serverPort>
+        <databaseName>aplikacija_db</databaseName>
+        <databaseUsername>root</databaseUsername>
+        <databasePassword>root</databasePassword>
+        <databaseHost>localhost</databaseHost>
+        <databasePort>3306</databasePort>
     </applicationConfiguration>
     <typeMappings>
     </typeMappings>
@@ -45,18 +52,6 @@
             </springplugin.generator.options.GeneratorOptions>
         </entry>
         <entry>
-            <string>ConverterGenerator</string>
-            <springplugin.generator.options.GeneratorOptions>
-                <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
-                <templateName>BaseRepository</templateName>
-                <templateDir>templates</templateDir>
-                <outputFileName>Base{entity}Repository.java</outputFileName>
-                <overwrite>true</overwrite>
-                <filePackage>generated.services</filePackage>
-                <generatorClassName>BaseRepositoryGenerator</generatorClassName>
-            </springplugin.generator.options.GeneratorOptions>
-        </entry>
-        <entry>
             <string>BaseServiceGenerator</string>
             <springplugin.generator.options.GeneratorOptions>
                 <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
@@ -90,6 +85,18 @@
                 <overwrite>true</overwrite>
                 <filePackage>generated.models</filePackage>
                 <generatorClassName>ModelGenerator</generatorClassName>
+            </springplugin.generator.options.GeneratorOptions>
+        </entry>
+        <entry>
+            <string>ApplicationYmlGenerator</string>
+            <springplugin.generator.options.GeneratorOptions>
+                <outputPath>{path}/{app_name}/resources</outputPath>
+                <templateName>applicationyml</templateName>
+                <templateDir>templates</templateDir>
+                <outputFileName>application.yml</outputFileName>
+                <overwrite>true</overwrite>
+                <filePackage>generated.services</filePackage>
+                <generatorClassName>ApplicationYmlGenerator</generatorClassName>
             </springplugin.generator.options.GeneratorOptions>
         </entry>
     </generatorOptions>
