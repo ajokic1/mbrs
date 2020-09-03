@@ -86,7 +86,7 @@
                 <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
                 <templateName>Model</templateName>
                 <templateDir>templates</templateDir>
-               // <outputFileName>{entity}.java</outputFileName>
+                <outputFileName>{entity}.java</outputFileName>
                 <overwrite>true</overwrite>
                 <filePackage>generated.models</filePackage>
                 <generatorClassName>ModelGenerator</generatorClassName>
