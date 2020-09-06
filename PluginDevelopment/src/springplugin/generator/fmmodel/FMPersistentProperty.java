@@ -8,7 +8,7 @@ public class FMPersistentProperty extends FMProperty {
 
     public FMPersistentProperty(FMProperty fmProperty) {
         super(fmProperty.getName(), fmProperty.getType(), fmProperty.getVisibility(),
-                fmProperty.getLower(), fmProperty.getUpper());
+                fmProperty.getLower(), fmProperty.getUpper(), fmProperty.getParentEntity());
     }
 
     public FMPersistentProperty() {

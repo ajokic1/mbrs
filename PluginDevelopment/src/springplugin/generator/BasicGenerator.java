@@ -40,6 +40,7 @@ public abstract class BasicGenerator {
 			configureFreemarker(tName);
 			createOutputDir();
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw new IOException("Can't find template " + tName + ".", e);
 		}
 

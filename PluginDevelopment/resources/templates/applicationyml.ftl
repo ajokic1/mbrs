@@ -1,5 +1,5 @@
 server:
-  port: ${port?string["0"]}
+  port: ${port}
 spring:
   application:
     name: ${projectName}

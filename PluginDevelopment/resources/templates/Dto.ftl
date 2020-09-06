@@ -2,20 +2,19 @@ package ${appPackage}.generated.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor; 
+import lombok.NoArgsConstructor;
 
-<#list Properties as property>
-import ${property.type.typePackage}.${property.type.name} 
+<#list properties as property>
+<#if property.type.typePackage?has_content>
+import ${property.type.typePackage}.${property.type.name};
+</#if>
 </#list>
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class ${entityName}Dto {
-
-	<#list Properties as property>
-    private ${property.type}  ${property.name} 
+	<#list properties as property>
+    private ${property.type.name} ${property.name}
     </#list>
-   
 }

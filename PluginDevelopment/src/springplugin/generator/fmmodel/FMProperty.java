@@ -11,12 +11,13 @@ public class FMProperty extends FMElement  {
 	private Integer lower;
 	private Integer upper;
 
-	public FMProperty(String name, FMType type, String visibility, Integer lower, Integer upper) {
+	public FMProperty(String name, FMType type, String visibility, Integer lower, Integer upper, FMEntity parentEntity) {
 		super(name);
 		this.type = type;
 		this.visibility = visibility;
 		this.lower = lower;
 		this.upper = upper;
+		this.parentEntity = parentEntity;
 	}
 
 	public FMProperty() {

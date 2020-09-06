@@ -1,7 +1,6 @@
-<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8" ?>
 <springplugin.generator.options.ProjectOptions>
-    <path>/C:/TEMP/generator</path>
+    <path>/home/andrej/temp</path>
     <applicationConfiguration>
         <applicationName>aplikacija</applicationName>
         <applicationPackage>test.generator.aplikacija</applicationPackage>
@@ -34,8 +33,20 @@
                 <templateName>Service</templateName>
                 <templateDir>templates</templateDir>
                 <outputFileName>{entity}Service.java</outputFileName>
-                <overwrite>true</overwrite>
-                <filePackage>generated.services</filePackage>
+                <overwrite>false</overwrite>
+                <filePackage>manual.services</filePackage>
+                <generatorClassName>ServiceGenerator</generatorClassName>
+            </springplugin.generator.options.GeneratorOptions>
+        </entry>
+        <entry>
+            <string>ControllerGenerator</string>
+            <springplugin.generator.options.GeneratorOptions>
+                <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
+                <templateName>Controller</templateName>
+                <templateDir>templates</templateDir>
+                <outputFileName>{entity}Controller.java</outputFileName>
+                <overwrite>false</overwrite>
+                <filePackage>manual.controllers</filePackage>
                 <generatorClassName>ServiceGenerator</generatorClassName>
             </springplugin.generator.options.GeneratorOptions>
         </entry>
@@ -47,7 +58,7 @@
                 <templateDir>templates</templateDir>
                 <outputFileName>{entity}Converter.java</outputFileName>
                 <overwrite>true</overwrite>
-                <filePackage>generated.services</filePackage>
+                <filePackage>generated.converters</filePackage>
                 <generatorClassName>ConverterGenerator</generatorClassName>
             </springplugin.generator.options.GeneratorOptions>
         </entry>
@@ -79,7 +90,7 @@
             <string>ModelGenerator</string>
             <springplugin.generator.options.GeneratorOptions>
                 <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
-                <templateName>Model</templateName>
+                <templateName>entity</templateName>
                 <templateDir>templates</templateDir>
                 <outputFileName>{entity}.java</outputFileName>
                 <overwrite>true</overwrite>

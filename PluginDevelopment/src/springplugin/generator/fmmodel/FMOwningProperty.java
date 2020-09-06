@@ -11,6 +11,8 @@ public class FMOwningProperty extends FMJoinProperty{
         this.setOptional(fmJoinProperty.isOptional());
         this.setFetch(fmJoinProperty.getFetch());
         this.setAnnotation(fmJoinProperty.getAnnotation());
+        this.setOppositeEnd(fmJoinProperty.getOppositeEnd());
+        this.setParentEntity(fmJoinProperty.getParentEntity());
     }
 
     public FMOwningProperty() {

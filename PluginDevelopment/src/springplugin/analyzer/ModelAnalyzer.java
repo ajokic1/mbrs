@@ -39,7 +39,7 @@ public class ModelAnalyzer {
 
 	private final String ENTITY_CLASS_NAME = "Entity";
 	private final String PERSISTENT_PROPERTY = "PersistentProperty";
-	private final String GENERATED_VALUE_PROPERTY = "GeneratedValueProperty";
+	private final String GENERATED_VALUE_PROPERTY = "GeneratedValue";
 	private final String JOIN_PROPERTY = "JoinProperty";
 	private final String OWNING_PROPERTY = "OwningProperty";
 	private final String INVERSE_PROPERTY = "InverseProperty";
@@ -69,7 +69,7 @@ public class ModelAnalyzer {
 			}
 		}
 
-		setJoinPropertyDefaults();
+		//setJoinPropertyDefaults();
 	}
 
 	private void processElement(Element element, Package pack, String packageOwner) throws AnalyzeException {
@@ -94,6 +94,7 @@ public class ModelAnalyzer {
 			processEntityAttributes(appliedStereotype, mdClass, fmEntity);
 		}
 		processEntityProperties(mdClass, fmEntity);
+		System.out.println("Processed entity " + fmEntity.getName() + " with " + fmEntity.getProperties().size() +  " properties");
 		FMModel.getInstance().getClasses().add(fmEntity);
 	}
 
@@ -118,6 +119,7 @@ public class ModelAnalyzer {
 	}
 
 	private void processEntityProperties(Class mdClass, FMEntity fmEntity) throws AnalyzeException {
+		System.out.println("Processing properties for " + fmEntity.getName() + "...");
 		Iterator<Property> iterator = ModelHelper.attributes(mdClass);
 		while (iterator.hasNext()) {
 			processEntityProperty(iterator.next(), fmEntity);
@@ -136,9 +138,11 @@ public class ModelAnalyzer {
 		fmProperty.setType(getType(property));
 		fmProperty.setParentEntity(fmEntity);
 
-		if(StereotypesHelper.hasStereotypeOrDerived(property, PERSISTENT_PROPERTY))
+		if(StereotypesHelper.hasStereotypeOrDerived(property, PERSISTENT_PROPERTY)
+		|| StereotypesHelper.hasStereotypeOrDerived(property, GENERATED_VALUE_PROPERTY))
 			processPersistentProperty(property, fmEntity, fmProperty);
-		else if(StereotypesHelper.hasStereotypeOrDerived(property, JOIN_PROPERTY))
+		else if(StereotypesHelper.hasStereotypeOrDerived(property, OWNING_PROPERTY)
+		|| StereotypesHelper.hasStereotypeOrDerived(property, INVERSE_PROPERTY))
 			processJoinProperty(property, fmEntity, fmProperty);
 	}
 
@@ -160,11 +164,15 @@ public class ModelAnalyzer {
 
 	private void processPersistentProperty(Property property, FMEntity fmEntity, FMProperty fmProperty) {
 		Stereotype appliedStereotype = StereotypesHelper.getAppliedStereotypeByString(property, PERSISTENT_PROPERTY);
-		if(appliedStereotype==null) return;
+		if(appliedStereotype==null)
+			appliedStereotype = StereotypesHelper.getAppliedStereotypeByString(property, GENERATED_VALUE_PROPERTY);
+		if(appliedStereotype==null)
+			return;
 		FMPersistentProperty fmPersistentProperty = new FMPersistentProperty(fmProperty);
 		for(Property propertyAttribute: appliedStereotype.getOwnedAttribute()) {
 			List<?> values = StereotypesHelper
 					.getStereotypePropertyValue(property, appliedStereotype, propertyAttribute.getName());
+			if(values.size() == 0) continue;
 			if(propertyAttribute.getName().equals("length") && values.get(0) instanceof Integer) {
 				fmPersistentProperty.setLength((Integer) values.get(0));
 			} else if(propertyAttribute.getName().equals("name") && values.get(0) instanceof String) {
@@ -179,7 +187,6 @@ public class ModelAnalyzer {
 			processGeneratedValueProperty(property, fmEntity, fmPersistentProperty);
 		} else{
 			fmEntity.addProperty(fmPersistentProperty);
-
 			if(fmPersistentProperty.isQueryable())
 				fmEntity.addQueryableProperty(fmPersistentProperty);
 		}
@@ -192,6 +199,7 @@ public class ModelAnalyzer {
 		for(Property propertyAttribute: appliedStereotype.getOwnedAttribute()) {
 			List<?> values = StereotypesHelper
 					.getStereotypePropertyValue(property, appliedStereotype, propertyAttribute.getName());
+			if(values.size() == 0) continue;
 			if(propertyAttribute.getName().equals("strategy") && values.get(0) instanceof EnumerationLiteral) {
 				EnumerationLiteral enumerationLiteral = (EnumerationLiteral) values.get(0);
 				GenerationType generationType = GenerationType.valueOf(enumerationLiteral.getName());
@@ -203,11 +211,17 @@ public class ModelAnalyzer {
 
 	private void processJoinProperty(Property property, FMEntity fmEntity, FMProperty fmProperty) {
 		Stereotype appliedStereotype = StereotypesHelper.getAppliedStereotypeByString(property, JOIN_PROPERTY);
-		if(appliedStereotype==null) return;
+		if(appliedStereotype==null)
+			appliedStereotype = StereotypesHelper.getAppliedStereotypeByString(property, OWNING_PROPERTY);
+		if(appliedStereotype==null)
+			appliedStereotype = StereotypesHelper.getAppliedStereotypeByString(property, INVERSE_PROPERTY);
+		if(appliedStereotype==null)
+			return;
 		FMJoinProperty fmJoinProperty = new FMJoinProperty(fmProperty);
 		for(Property propertyAttribute: appliedStereotype.getOwnedAttribute()) {
 			List<?> values = StereotypesHelper
 					.getStereotypePropertyValue(property, appliedStereotype, propertyAttribute.getName());
+			if(values.size() == 0) continue;
 			if(propertyAttribute.getName().equals("name") && values.get(0) instanceof String) {
 				fmJoinProperty.setName((String) values.get(0));
 			} else if(propertyAttribute.getName().equals("optional") && values.get(0) instanceof Boolean) {
@@ -223,12 +237,16 @@ public class ModelAnalyzer {
 			}
 		}
 
-		joinPropertyMap.put(fmJoinProperty.getName(), fmJoinProperty);
-		FMJoinProperty opposite = joinPropertyMap.get(property.getOpposite().getName());
-		if(opposite != null) {
-			opposite.setOppositeEnd(fmJoinProperty);
-			fmJoinProperty.setOppositeEnd(opposite);
-		}
+		fmJoinProperty.setOppositeEnd(createOppositeInstance(property));
+		fmJoinProperty = setJoinPropertyAnnotations(fmJoinProperty);
+//		joinPropertyMap.put(fmJoinProperty.getName(), fmJoinProperty);
+//		FMJoinProperty opposite = joinPropertyMap.get(property.getOpposite().getName());
+//		if(opposite != null) {
+//			opposite.setOppositeEnd(fmJoinProperty);
+//			fmJoinProperty.setOppositeEnd(opposite);
+//
+//			System.out.println("LINK: " + fmJoinProperty.getName() + "----" + opposite.getName());
+//		}
 
 		if(StereotypesHelper.hasStereotypeOrDerived(property, OWNING_PROPERTY)) {
 			processOwningProperty(property, fmEntity, fmJoinProperty);
@@ -243,9 +261,11 @@ public class ModelAnalyzer {
 		Stereotype appliedStereotype = StereotypesHelper.getAppliedStereotypeByString(property, OWNING_PROPERTY);
 		if(appliedStereotype==null) return;
 		FMOwningProperty fmOwningProperty = new FMOwningProperty(fmJoinProperty);
+		setOwningPropertyDefaults(fmOwningProperty);
 		for(Property propertyAttribute: appliedStereotype.getOwnedAttribute()) {
 			List<?> values = StereotypesHelper
 					.getStereotypePropertyValue(property, appliedStereotype, propertyAttribute.getName());
+			if(values.size() == 0) continue;
 			if(propertyAttribute.getName().equals("referencedColumnName") && values.get(0) instanceof String) {
 				fmOwningProperty.setReferencedColumnName((String) values.get(0));
 			} else if(propertyAttribute.getName().equals("joinColumnName") && values.get(0) instanceof String) {
@@ -261,9 +281,11 @@ public class ModelAnalyzer {
 		Stereotype appliedStereotype = StereotypesHelper.getAppliedStereotypeByString(property, INVERSE_PROPERTY);
 		if(appliedStereotype==null) return;
 		FMInverseProperty fmInverseProperty = new FMInverseProperty(fmJoinProperty);
+		setInversePropertyDefaults(fmInverseProperty);
 		for(Property propertyAttribute: appliedStereotype.getOwnedAttribute()) {
 			List<?> values = StereotypesHelper
 					.getStereotypePropertyValue(property, appliedStereotype, propertyAttribute.getName());
+			if(values.size() == 0) continue;
 			if(propertyAttribute.getName().equals("mappedBy") && values.get(0) instanceof String) {
 				fmInverseProperty.setMappedBy((String) values.get(0));
 			} else if(propertyAttribute.getName().equals("cascade") && values.get(0) instanceof EnumerationLiteral) {
@@ -272,25 +294,29 @@ public class ModelAnalyzer {
 				fmInverseProperty.setCascade(cascadeType);
 			}
 		}
+
 		fmEntity.addProperty(fmInverseProperty);
 	}
 
-	private void setJoinPropertyDefaults() {
-		for(FMJoinProperty property: joinPropertyMap.values()) {
-			setJoinPropertyAnnotations(property);
-		}
-		for(FMJoinProperty property: joinPropertyMap.values()) {
-			if(property instanceof FMOwningProperty) {
-				setOwningPropertyDefaults(property);
-			}
-			else if(property instanceof FMInverseProperty) {
-				setInversePropertyDefaults(property);
-			}
-		}
-	}
+//	private void setJoinPropertyDefaults() {
+//		for(String propertyKey: joinPropertyMap.keySet()) {
+//			FMJoinProperty property = joinPropertyMap.get(propertyKey);
+//			if(property instanceof FMOwningProperty) {
+//				setOwningPropertyDefaults(property);
+//			}
+//			else if(property instanceof FMInverseProperty) {
+//				setInversePropertyDefaults(property);
+//			}
+//		}
+//	}
 
-	private void setJoinPropertyAnnotations(FMJoinProperty property) {
+	private FMJoinProperty setJoinPropertyAnnotations(FMJoinProperty property) {
 		int upper = property.getUpper();
+		if (property.getOppositeEnd() == null){
+			System.out.println("PROPERTY " + property.getName() + " has no opposite link.");
+			return null;
+		}
+
 		int oppositeUpper = property.getOppositeEnd().getUpper();
 
 		if(upper == -1 && oppositeUpper == -1)
@@ -301,11 +327,15 @@ public class ModelAnalyzer {
 			property.setAnnotation(AnnotationType.ManyToOne);
 		else
 			property.setAnnotation(AnnotationType.OneToOne);
+		return property;
 	}
 
 
-	private void setOwningPropertyDefaults(FMJoinProperty property) {
-		FMOwningProperty fmOwningProperty = (FMOwningProperty) property;
+	private void setOwningPropertyDefaults(FMOwningProperty fmOwningProperty) {
+		if(fmOwningProperty.getOppositeEnd() == null){
+			System.out.println("No opposite for " + fmOwningProperty.getName());
+			return;
+		}
 		if(fmOwningProperty.getAnnotation() == AnnotationType.ManyToOne || fmOwningProperty.getAnnotation() == AnnotationType.OneToOne){
 			fmOwningProperty.setReferencedColumnName("id");
 		}
@@ -321,8 +351,11 @@ public class ModelAnalyzer {
 		}
 	}
 
-	private void setInversePropertyDefaults(FMJoinProperty property) {
-		FMInverseProperty fmInverseProperty = (FMInverseProperty) property;
+	private void setInversePropertyDefaults(FMInverseProperty fmInverseProperty) {
+		if(fmInverseProperty.getOppositeEnd() == null){
+			System.out.println("No opposite for " + fmInverseProperty.getName());
+			return;
+		}
 		fmInverseProperty.setMappedBy(fmInverseProperty.getOppositeEnd().getName());
 	}
 
@@ -335,6 +368,16 @@ public class ModelAnalyzer {
 			fmEnumeration.addValue(literal.getName());
 		}
 		FMModel.getInstance().getEnumerations().add(fmEnumeration);
+	}
+
+	private FMJoinProperty createOppositeInstance(Property property) {
+		FMJoinProperty opposite = new FMJoinProperty();
+		opposite.setName(property.getOpposite().getName());
+		opposite.setLower(property.getOpposite().getLower());
+		opposite.setUpper(property.getOpposite().getUpper());
+		opposite.setType(getType(property.getOpposite()));
+		opposite.setParentEntity(new FMEntity(((Class)property.getOpposite().getOwner()).getName(), ""));
+		return opposite;
 	}
 
 	private String getPackageName(Package pack, String packageOwner) {

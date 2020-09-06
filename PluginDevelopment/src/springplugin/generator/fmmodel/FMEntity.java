@@ -1,5 +1,7 @@
 package springplugin.generator.fmmodel;
 
+import com.nomagic.uml2.ext.magicdraw.classes.mdkernel.Class;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -35,7 +37,8 @@ public class FMEntity extends FMType {
 	}
 	
 	public void addProperty(FMProperty property){
-		FMProperties.add(property);		
+		System.out.println("Added property " + property.getName() + " to entity " + getName());
+		FMProperties.add(property);
 	}
 	
 	public int getPropertyCount(){

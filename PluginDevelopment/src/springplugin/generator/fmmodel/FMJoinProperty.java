@@ -1,5 +1,6 @@
 package springplugin.generator.fmmodel;
 
+import com.nomagic.uml2.ext.magicdraw.classes.mdkernel.Property;
 import springplugin.generator.fmmodel.enums.AnnotationType;
 import springplugin.generator.fmmodel.enums.FetchType;
 
@@ -11,7 +12,7 @@ public class FMJoinProperty extends FMProperty {
 
     public FMJoinProperty(FMProperty fmProperty) {
         super(fmProperty.getName(), fmProperty.getType(), fmProperty.getVisibility(), fmProperty.getLower(),
-                fmProperty.getUpper());
+                fmProperty.getUpper(), fmProperty.getParentEntity());
     }
 
     public FMJoinProperty() {
