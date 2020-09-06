@@ -87,15 +87,15 @@
             </springplugin.generator.options.GeneratorOptions>
         </entry>
         <entry>
-            <string>ModelGenerator</string>
+            <string>EntityGenerator</string>
             <springplugin.generator.options.GeneratorOptions>
                 <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
                 <templateName>entity</templateName>
                 <templateDir>templates</templateDir>
                 <outputFileName>{entity}.java</outputFileName>
                 <overwrite>true</overwrite>
-                <filePackage>generated.models</filePackage>
-                <generatorClassName>ModelGenerator</generatorClassName>
+                <filePackage>generated.entities</filePackage>
+                <generatorClassName>EntityGenerator</generatorClassName>
             </springplugin.generator.options.GeneratorOptions>
         </entry>
         <entry>

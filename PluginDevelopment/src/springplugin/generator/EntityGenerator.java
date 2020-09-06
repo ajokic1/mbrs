@@ -8,9 +8,9 @@ import springplugin.configuration.ApplicationConfiguration;
 import springplugin.generator.fmmodel.*;
 import springplugin.generator.options.GeneratorOptions;
 
-public class ModelGenerator extends PerEntityGenerator{
+public class EntityGenerator extends PerEntityGenerator{
 
-	public ModelGenerator(GeneratorOptions generatorOptions) {
+	public EntityGenerator(GeneratorOptions generatorOptions) {
 		super(generatorOptions);
 	}
 
