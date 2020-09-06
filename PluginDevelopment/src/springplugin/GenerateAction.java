@@ -10,9 +10,9 @@ import javax.swing.JOptionPane;
 
 import com.nomagic.magicdraw.actions.MDAction;
 import com.nomagic.magicdraw.core.Application;
-//import com.nomagic.uml2.ext.magicdraw.classes.mdkernel.Package;
-//import com.thoughtworks.xstream.XStream;
-//import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.nomagic.uml2.ext.magicdraw.classes.mdkernel.Package;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import springplugin.analyzer.AnalyzeException;
 import springplugin.analyzer.ModelAnalyzer;

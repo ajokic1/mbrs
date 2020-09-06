@@ -7,6 +7,7 @@ public class FMJoinProperty extends FMProperty {
     private boolean optional;
     private FetchType fetch;
     private AnnotationType annotation;
+    private FMJoinProperty oppositeEnd;
 
     public FMJoinProperty(FMProperty fmProperty) {
         super(fmProperty.getName(), fmProperty.getType(), fmProperty.getVisibility(), fmProperty.getLower(),
@@ -39,5 +40,13 @@ public class FMJoinProperty extends FMProperty {
 
     public void setAnnotation(AnnotationType annotation) {
         this.annotation = annotation;
+    }
+
+    public FMJoinProperty getOppositeEnd() {
+        return oppositeEnd;
+    }
+
+    public void setOppositeEnd(FMJoinProperty oppositeEnd) {
+        this.oppositeEnd = oppositeEnd;
     }
 }

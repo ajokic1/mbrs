@@ -4,6 +4,7 @@ public class FMOwningProperty extends FMJoinProperty{
     private String referencedColumnName;
     private String joinColumnName;
     private String inverseJoinColumnName;
+    private String joinTableName;
 
     public FMOwningProperty(FMJoinProperty fmJoinProperty) {
         super(fmJoinProperty);
@@ -38,5 +39,13 @@ public class FMOwningProperty extends FMJoinProperty{
 
     public void setInverseJoinColumnName(String inverseJoinColumnName) {
         this.inverseJoinColumnName = inverseJoinColumnName;
+    }
+
+    public String getJoinTableName() {
+        return joinTableName;
+    }
+
+    public void setJoinTableName(String joinTableName) {
+        this.joinTableName = joinTableName;
     }
 }

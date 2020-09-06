@@ -2,6 +2,8 @@ package springplugin.generator.fmmodel;
 
 
 public class FMProperty extends FMElement  {
+	private FMEntity parentEntity;
+
 	private FMType type;
 	private String visibility;
 
@@ -51,5 +53,13 @@ public class FMProperty extends FMElement  {
 
 	public void setUpper(Integer upper) {
 		this.upper = upper;
+	}
+
+	public FMEntity getParentEntity() {
+		return parentEntity;
+	}
+
+	public void setParentEntity(FMEntity parentEntity) {
+		this.parentEntity = parentEntity;
 	}
 }

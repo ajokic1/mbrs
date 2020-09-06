@@ -1,7 +1,9 @@
 package springplugin.analyzer;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.nomagic.uml2.ext.magicdraw.mdprofiles.Stereotype;
 import springplugin.configuration.ApplicationConfiguration;
@@ -42,6 +44,8 @@ public class ModelAnalyzer {
 	private final String OWNING_PROPERTY = "OwningProperty";
 	private final String INVERSE_PROPERTY = "InverseProperty";
 
+	private static Map<String, FMJoinProperty> joinPropertyMap = new HashMap<>();
+
 	
 	public ModelAnalyzer(Package root, String filePackage) {
 		super();
@@ -64,6 +68,8 @@ public class ModelAnalyzer {
 				processElement(ownedElement, pack, packageOwner);
 			}
 		}
+
+		setJoinPropertyDefaults();
 	}
 
 	private void processElement(Element element, Package pack, String packageOwner) throws AnalyzeException {
@@ -128,6 +134,7 @@ public class ModelAnalyzer {
 		fmProperty.setUpper(property.getUpper());
 		fmProperty.setVisibility(property.getVisibility().toString());
 		fmProperty.setType(getType(property));
+		fmProperty.setParentEntity(fmEntity);
 
 		if(StereotypesHelper.hasStereotypeOrDerived(property, PERSISTENT_PROPERTY))
 			processPersistentProperty(property, fmEntity, fmProperty);
@@ -216,6 +223,13 @@ public class ModelAnalyzer {
 			}
 		}
 
+		joinPropertyMap.put(fmJoinProperty.getName(), fmJoinProperty);
+		FMJoinProperty opposite = joinPropertyMap.get(property.getOpposite().getName());
+		if(opposite != null) {
+			opposite.setOppositeEnd(fmJoinProperty);
+			fmJoinProperty.setOppositeEnd(opposite);
+		}
+
 		if(StereotypesHelper.hasStereotypeOrDerived(property, OWNING_PROPERTY)) {
 			processOwningProperty(property, fmEntity, fmJoinProperty);
 		} else if(StereotypesHelper.hasStereotypeOrDerived(property, INVERSE_PROPERTY)) {
@@ -259,6 +273,57 @@ public class ModelAnalyzer {
 			}
 		}
 		fmEntity.addProperty(fmInverseProperty);
+	}
+
+	private void setJoinPropertyDefaults() {
+		for(FMJoinProperty property: joinPropertyMap.values()) {
+			setJoinPropertyAnnotations(property);
+		}
+		for(FMJoinProperty property: joinPropertyMap.values()) {
+			if(property instanceof FMOwningProperty) {
+				setOwningPropertyDefaults(property);
+			}
+			else if(property instanceof FMInverseProperty) {
+				setInversePropertyDefaults(property);
+			}
+		}
+	}
+
+	private void setJoinPropertyAnnotations(FMJoinProperty property) {
+		int upper = property.getUpper();
+		int oppositeUpper = property.getOppositeEnd().getUpper();
+
+		if(upper == -1 && oppositeUpper == -1)
+			property.setAnnotation(AnnotationType.ManyToMany);
+		else if(upper == -1 && oppositeUpper == 1)
+			property.setAnnotation(AnnotationType.OneToMany);
+		else if(upper == 1 && oppositeUpper == -1)
+			property.setAnnotation(AnnotationType.ManyToOne);
+		else
+			property.setAnnotation(AnnotationType.OneToOne);
+	}
+
+
+	private void setOwningPropertyDefaults(FMJoinProperty property) {
+		FMOwningProperty fmOwningProperty = (FMOwningProperty) property;
+		if(fmOwningProperty.getAnnotation() == AnnotationType.ManyToOne || fmOwningProperty.getAnnotation() == AnnotationType.OneToOne){
+			fmOwningProperty.setReferencedColumnName("id");
+		}
+		else if(fmOwningProperty.getAnnotation() == AnnotationType.ManyToMany) {
+			// thisentity_id
+			fmOwningProperty.setJoinColumnName(fmOwningProperty
+					.getParentEntity().getName().toLowerCase() + "_id");
+			// relatedentity_id
+			fmOwningProperty.setInverseJoinColumnName(fmOwningProperty.getOppositeEnd()
+					.getParentEntity().getName().toLowerCase() + "_id");
+			fmOwningProperty.setJoinTableName(fmOwningProperty.getParentEntity().getName() + "_"
+					+ fmOwningProperty.getOppositeEnd().getParentEntity().getName());
+		}
+	}
+
+	private void setInversePropertyDefaults(FMJoinProperty property) {
+		FMInverseProperty fmInverseProperty = (FMInverseProperty) property;
+		fmInverseProperty.setMappedBy(fmInverseProperty.getOppositeEnd().getName());
 	}
 
 	private void processEnumeration(Enumeration enumeration, String packageName) throws AnalyzeException {
