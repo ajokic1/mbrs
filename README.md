@@ -2,6 +2,6 @@
 ###### Project within subject called Agile Software Development Methodology.
 
 ## Contributors
-⋅⋅* [Andrej Jokić](https://github.com/ajokic1)
-⋅⋅* [Olivera Blagojević](https://github.com/oliverablagojevic)
-⋅⋅* [Milica Damjanović](https://github.com/DamjanovicMilica)
+• [Andrej Jokić](https://github.com/ajokic1) <br/>
+• [Olivera Blagojević](https://github.com/oliverablagojevic) <br/>
+• [Milica Damjanović](https://github.com/DamjanovicMilica) <br/>
