@@ -1,20 +1,16 @@
 package ${appPackage}.generated.repositories;
 
-import ${appPackage}.generated.controllers.${entityName}Controller;
-import ${appPackage}.generated.converters.${entityName}Converter;
-import ${appPackage}.generated.dtos.${entityName}Dto;
-import ${appPackage}.generated.models.${entityName};
-import ${appPackage}.generated.services.${entityName}Service;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
+import ${appPackage}.generated.entities.${entityName};
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-<#list queryableProperties as property>
+@Repository
 public interface Base${entityName}Repository extends JpaRepository<${entityName}, Long> {
+    <#list queryableProperties as property>
     public List<${entityName}> findBy${property.name?capitalize}(int ${property.name});
+    </#list>
 }
-</#list>
+
 

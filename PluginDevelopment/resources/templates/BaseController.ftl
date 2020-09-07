@@ -2,8 +2,8 @@ package ${appPackage}.generated.controllers;
 
 import ${appPackage}.generated.converters.${entityName}Converter;
 import ${appPackage}.generated.dtos.${entityName}Dto;
-import ${appPackage}.generated.models.${entityName};
-import ${appPackage}.generated.services.${entityName}Service;
+import ${appPackage}.generated.entities.${entityName};
+import ${appPackage}.manual.services.${entityName}Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

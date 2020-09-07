@@ -17,7 +17,7 @@
         <entry>
             <string>BaseControllerGenerator</string>
             <springplugin.generator.options.GeneratorOptions>
-                <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
+                <outputPath>{path}/{app_name}/src/main/java/{app_package}</outputPath>
                 <templateName>BaseController</templateName>
                 <templateDir>templates</templateDir>
                 <outputFileName>Base{entity}Controller.java</outputFileName>
@@ -29,7 +29,7 @@
         <entry>
             <string>ServiceGenerator</string>
             <springplugin.generator.options.GeneratorOptions>
-                <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
+                <outputPath>{path}/{app_name}/src/main/java/{app_package}</outputPath>
                 <templateName>Service</templateName>
                 <templateDir>templates</templateDir>
                 <outputFileName>{entity}Service.java</outputFileName>
@@ -41,19 +41,19 @@
         <entry>
             <string>ControllerGenerator</string>
             <springplugin.generator.options.GeneratorOptions>
-                <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
+                <outputPath>{path}/{app_name}/src/main/java/{app_package}</outputPath>
                 <templateName>Controller</templateName>
                 <templateDir>templates</templateDir>
                 <outputFileName>{entity}Controller.java</outputFileName>
                 <overwrite>false</overwrite>
                 <filePackage>manual.controllers</filePackage>
-                <generatorClassName>ServiceGenerator</generatorClassName>
+                <generatorClassName>ControllerGenerator</generatorClassName>
             </springplugin.generator.options.GeneratorOptions>
         </entry>
         <entry>
             <string>ConverterGenerator</string>
             <springplugin.generator.options.GeneratorOptions>
-                <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
+                <outputPath>{path}/{app_name}/src/main/java/{app_package}</outputPath>
                 <templateName>Converter</templateName>
                 <templateDir>templates</templateDir>
                 <outputFileName>{entity}Converter.java</outputFileName>
@@ -65,7 +65,7 @@
         <entry>
             <string>BaseServiceGenerator</string>
             <springplugin.generator.options.GeneratorOptions>
-                <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
+                <outputPath>{path}/{app_name}/src/main/java/{app_package}</outputPath>
                 <templateName>BaseService</templateName>
                 <templateDir>templates</templateDir>
                 <outputFileName>Base{entity}Service.java</outputFileName>
@@ -75,9 +75,21 @@
             </springplugin.generator.options.GeneratorOptions>
         </entry>
         <entry>
+            <string>BaseRepositoryGenerator</string>
+            <springplugin.generator.options.GeneratorOptions>
+                <outputPath>{path}/{app_name}/src/main/java/{app_package}</outputPath>
+                <templateName>BaseRepository</templateName>
+                <templateDir>templates</templateDir>
+                <outputFileName>Base{entity}Repository.java</outputFileName>
+                <overwrite>true</overwrite>
+                <filePackage>generated.repositories</filePackage>
+                <generatorClassName>BaseRepositoryGenerator</generatorClassName>
+            </springplugin.generator.options.GeneratorOptions>
+        </entry>
+        <entry>
             <string>DtoGenerator</string>
             <springplugin.generator.options.GeneratorOptions>
-                <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
+                <outputPath>{path}/{app_name}/src/main/java/{app_package}</outputPath>
                 <templateName>Dto</templateName>
                 <templateDir>templates</templateDir>
                 <outputFileName>{entity}Dto.java</outputFileName>
@@ -89,7 +101,7 @@
         <entry>
             <string>EntityGenerator</string>
             <springplugin.generator.options.GeneratorOptions>
-                <outputPath>{path}/{app_name}/src/{app_package}</outputPath>
+                <outputPath>{path}/{app_name}/src/main/java/{app_package}</outputPath>
                 <templateName>entity</templateName>
                 <templateDir>templates</templateDir>
                 <outputFileName>{entity}.java</outputFileName>
@@ -101,7 +113,7 @@
         <entry>
             <string>ApplicationYmlGenerator</string>
             <springplugin.generator.options.GeneratorOptions>
-                <outputPath>{path}/{app_name}/resources</outputPath>
+                <outputPath>{path}/{app_name}/src/main/resources</outputPath>
                 <templateName>applicationyml</templateName>
                 <templateDir>templates</templateDir>
                 <outputFileName>application.yml</outputFileName>

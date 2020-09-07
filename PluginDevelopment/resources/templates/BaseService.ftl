@@ -1,18 +1,18 @@
 package ${appPackage}.generated.services;
 
-import ${appPackage}.generated.converters.${entityName}Converter;
-import ${appPackage}.generated.dtos.${entityName}Dto;
-import ${appPackage}.generated.models.${entityName};
-import ${appPackage}.generated.controllers.${entityName}Controller;
+import ${appPackage}.generated.entities.${entityName};
+import ${appPackage}.generated.repositories.Base${entityName}Repository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public abstract class Base${entityName}Service{
 
     @Autowired
-    ${entityName}Repository ${entityName?lower_case}Repository;
+    Base${entityName}Repository ${entityName?lower_case}Repository;
 
     public ${entityName} get${entityName}ById(long id) {
         Optional<${entityName}> ${entityName?lower_case}Optional = ${entityName?lower_case}Repository.findById(id);
@@ -22,10 +22,11 @@ public abstract class Base${entityName}Service{
     public List<${entityName}> getAll${entityName}s() {
         return ${entityName?lower_case}Repository.findAll();
     }
-
-    public List<${entityName}> get${entityName}sByYear(int year) {
-        return ${entityName?lower_case}Repository.findByYear(year);
+    <#list queryableProperties as property>
+    public List<${entityName}> get${entityName}sBy${property.name?capitalize}(${property.type} ${property.name}) {
+        return ${entityName?lower_case}Repository.findBy${property.name?capitalize}(${property.name});
     }
+    </#list>
 
     public void delete${entityName}(long id) throws IllegalArgumentException {
         ${entityName?lower_case}Repository.deleteById(id);

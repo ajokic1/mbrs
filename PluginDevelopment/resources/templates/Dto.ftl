@@ -15,6 +15,6 @@ import ${property.type.typePackage}.${property.type.name};
 @NoArgsConstructor
 public class ${entityName}Dto {
 	<#list properties as property>
-    private ${property.type.name} ${property.name}
+    private ${property.type.name} ${property.name};
     </#list>
 }

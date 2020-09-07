@@ -2,7 +2,7 @@ package ${appPackage}.manual.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ${appPackage}.generated.services.Base${entityName}Controller;
+import ${appPackage}.generated.controllers.Base${entityName}Controller;
 
 @RestController
 @RequestMapping("/${entityName?lower_case}s")

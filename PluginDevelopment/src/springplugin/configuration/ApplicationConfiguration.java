@@ -67,7 +67,7 @@ public abstract class ApplicationConfiguration {
         return databasePassword;
     }
 
-    public String getGeneratedEntitiesPackage() { return getGeneratedCodePackage() + ".models";}
+    public String getGeneratedEntitiesPackage() { return getGeneratedCodePackage() + ".entities";}
     public String getGeneratedServicesPackage() { return getGeneratedCodePackage() + ".services";}
     public String getGeneratedControllersPackage() { return getGeneratedCodePackage() + ".controllers";}
     public String getGeneratedConvertersPackage() { return getGeneratedCodePackage() + ".converters";}
@@ -76,7 +76,7 @@ public abstract class ApplicationConfiguration {
 
     public Set<String> getJavaTypes() {
         String[] typesArray = new String[] {
-                "int", "float", "String", "char", "double", "boolean", "byte", "Integer", "Float", "Double",
+                "int", "long", "Long", "float", "String", "char", "double", "boolean", "byte", "Integer", "Float", "Double",
                 "Boolean"
         };
         return new HashSet<>(Arrays.asList(typesArray));

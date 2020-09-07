@@ -1,12 +1,13 @@
 package ${appPackage}.generated.converters;
 
-import ${appPackage}.generated.services.${entityName}Service;
 import ${appPackage}.generated.dtos.${entityName}Dto;
-import ${appPackage}.generated.models.${entityName};
-import ${appPackage}.generated.controllers.${entityName}Controller;
+import ${appPackage}.generated.entities.${entityName};
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Component;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @Component
 public class ${entityName}Converter {
@@ -22,10 +23,10 @@ public class ${entityName}Converter {
         return modelMapper.map(${entityName?lower_case}Dto, ${entityName}.class);
     }
 
-    public Student updateEntityFromDto(${entityName} student, ${entityName}Dto ${entityName?lower_case}Dto) {
+    public ${entityName} updateEntityFromDto(${entityName} ${entityName?lower_case}, ${entityName}Dto ${entityName?lower_case}Dto) {
         ${entityName?lower_case}Dto.setId(${entityName?lower_case}.getId());
         modelMapper.map(${entityName?lower_case}Dto, ${entityName?lower_case});
-        return student;
+        return ${entityName?lower_case};
     }
 
     public List<${entityName}Dto> convertListToDto(List<${entityName}> ${entityName?lower_case}s){
@@ -33,7 +34,7 @@ public class ${entityName}Converter {
         for(${entityName} ${entityName?lower_case}: ${entityName?lower_case}s) {
             ${entityName?lower_case}Dtos.add(convertToDto(${entityName?lower_case}));
         }
-        return ${entityName}Dtos;
+        return ${entityName?lower_case}Dtos;
 }
 
     public List<${entityName}> convertListToEntity(List<${entityName}Dto> ${entityName?lower_case}Dtos){

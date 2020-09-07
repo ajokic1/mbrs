@@ -43,6 +43,7 @@ public class SpringPlugin extends com.nomagic.magicdraw.plugins.Plugin {
 			System.out.println("generatorOptionsLoaded: " + projectOptions.getGeneratorOptions().size());
 			ProjectOptions.getProjectOptions().setTypeMappings(projectOptions.getTypeMappings());
 			ProjectOptions.getProjectOptions().setPath(projectOptions.getPath());
+			ProjectOptions.getProjectOptions().setApplicationConfiguration(projectOptions.getApplicationConfiguration());
 		} catch (FileNotFoundException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
 			e.printStackTrace();
