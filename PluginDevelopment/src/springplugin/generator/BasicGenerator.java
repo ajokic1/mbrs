@@ -94,10 +94,12 @@ public abstract class BasicGenerator {
 
 	}
 
+
 	private String getOutputFileFullPath(String fileNamePart) {
 		return getOutputPath()
 				+ File.separator
-				+ generatorOptions.getOutputFileName().replace("{entity}", fileNamePart);
+				+ generatorOptions.getOutputFileName().replace("{entity}", fileNamePart)
+				.replace("{lowerEntity}", fileNamePart.toLowerCase());
 	}
 
 	private String getOutputPath() {

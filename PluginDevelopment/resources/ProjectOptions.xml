@@ -122,5 +122,65 @@
                 <generatorClassName>ApplicationYmlGenerator</generatorClassName>
             </springplugin.generator.options.GeneratorOptions>
         </entry>
+        <entry>
+            <string>FrontAppGenerator</string>
+            <springplugin.generator.options.GeneratorOptions>
+                <outputPath>{path}/{app_name}_front/src</outputPath>
+                <templateName>App</templateName>
+                <templateDir>templates</templateDir>
+                <outputFileName>App.js</outputFileName>
+                <overwrite>true</overwrite>
+                <filePackage>none</filePackage>
+                <generatorClassName>WithEntitiesGenerator</generatorClassName>
+            </springplugin.generator.options.GeneratorOptions>
+        </entry>
+        <entry>
+            <string>FrontNavbarGenerator</string>
+            <springplugin.generator.options.GeneratorOptions>
+                <outputPath>{path}/{app_name}_front/src/partials</outputPath>
+                <templateName>Navbar</templateName>
+                <templateDir>templates</templateDir>
+                <outputFileName>Navbar.js</outputFileName>
+                <overwrite>true</overwrite>
+                <filePackage>none</filePackage>
+                <generatorClassName>WithEntitiesGenerator</generatorClassName>
+            </springplugin.generator.options.GeneratorOptions>
+        </entry>
+        <entry>
+            <string>FrontEntityFormGenerator</string>
+            <springplugin.generator.options.GeneratorOptions>
+                <outputPath>{path}/{app_name}_front/src</outputPath>
+                <templateName>EntityForm</templateName>
+                <templateDir>templates</templateDir>
+                <outputFileName>{lowerEntity}/{entity}Form.js</outputFileName>
+                <overwrite>true</overwrite>
+                <filePackage>none</filePackage>
+                <generatorClassName>FrontPerEntityGenerator</generatorClassName>
+            </springplugin.generator.options.GeneratorOptions>
+        </entry>
+        <entry>
+            <string>FrontEntityListGenerator</string>
+            <springplugin.generator.options.GeneratorOptions>
+                <outputPath>{path}/{app_name}_front/src</outputPath>
+                <templateName>EntityList</templateName>
+                <templateDir>templates</templateDir>
+                <outputFileName>{lowerEntity}/{entity}List.js</outputFileName>
+                <overwrite>true</overwrite>
+                <filePackage>none</filePackage>
+                <generatorClassName>FrontPerEntityGenerator</generatorClassName>
+            </springplugin.generator.options.GeneratorOptions>
+        </entry>
+        <entry>
+            <string>FrontEntityMainGenerator</string>
+            <springplugin.generator.options.GeneratorOptions>
+                <outputPath>{path}/{app_name}_front/src</outputPath>
+                <templateName>EntityMain</templateName>
+                <templateDir>templates</templateDir>
+                <outputFileName>{lowerEntity}/{entity}.js</outputFileName>
+                <overwrite>true</overwrite>
+                <filePackage>none</filePackage>
+                <generatorClassName>FrontPerEntityGenerator</generatorClassName>
+            </springplugin.generator.options.GeneratorOptions>
+        </entry>
     </generatorOptions>
 </springplugin.generator.options.ProjectOptions>
